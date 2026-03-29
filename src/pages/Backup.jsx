@@ -69,8 +69,8 @@ export default function Backup() {
         {/* Exportar */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
           <div className="flex items-start gap-4">
-            <div className="w-11 h-11 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center shrink-0">
-              <Download size={20} className="text-indigo-600 dark:text-indigo-400" />
+            <div className="w-11 h-11 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center shrink-0">
+              <Download size={20} className="text-primary-600 dark:text-primary-400" />
             </div>
             <div className="flex-1 min-w-0">
               <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Exportar dados</h2>
@@ -78,7 +78,7 @@ export default function Backup() {
                 Baixa um arquivo JSON com todos os seus dados: categorias, lançamentos, metas, orçamentos, cartões e recorrências.
               </p>
               <button onClick={handleExportar} disabled={exportLoading}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
+                className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
                 {exportLoading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
                 Exportar backup
               </button>
@@ -119,7 +119,7 @@ export default function Backup() {
           <ul className="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
             {['Categorias e subcategorias', 'Todos os lançamentos', 'Metas de gastos', 'Orçamentos mensais', 'Cartões de crédito', 'Recorrências'].map(item => (
               <li key={item} className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full shrink-0" />
+                <span className="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0" />
                 {item}
               </li>
             ))}

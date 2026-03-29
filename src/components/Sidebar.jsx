@@ -34,15 +34,15 @@ export default function Sidebar() {
     : 'U'
 
   return (
-    <aside className="w-64 bg-slate-900 flex flex-col shrink-0">
+    <aside className="w-64 bg-slate-950 flex flex-col shrink-0">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-6 border-b border-slate-800">
-        <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-800/60">
+        <div className="w-9 h-9 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-900/40">
           <Wallet size={18} className="text-white" />
         </div>
         <div>
           <p className="text-white font-semibold text-sm leading-none">Financeiro</p>
-          <p className="text-slate-400 text-xs mt-0.5">Pessoal</p>
+          <p className="text-primary-400 text-xs mt-0.5 font-medium">Pessoal</p>
         </div>
       </div>
 
@@ -56,30 +56,29 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                 isActive
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-primary-600 text-white shadow-sm shadow-primary-900/50'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
               }`
             }
           >
-            <Icon size={18} />
+            <Icon size={17} />
             {label}
           </NavLink>
         ))}
       </nav>
 
       {/* User + Theme toggle */}
-      <div className="px-3 py-4 border-t border-slate-800">
-        {/* Theme toggle */}
+      <div className="px-3 py-4 border-t border-slate-800/60">
         <button
           onClick={toggle}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white text-sm transition-all mb-1"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-100 text-sm transition-all mb-1"
         >
-          {dark ? <Sun size={16} /> : <Moon size={16} />}
+          {dark ? <Sun size={15} /> : <Moon size={15} />}
           {dark ? 'Modo claro' : 'Modo escuro'}
         </button>
 
         <div className="flex items-center gap-3 px-3 mb-1">
-          <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
             {initials}
           </div>
           <div className="min-w-0">
@@ -91,7 +90,7 @@ export default function Sidebar() {
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-red-400 text-sm transition-all"
         >
-          <LogOut size={16} />
+          <LogOut size={15} />
           Sair
         </button>
       </div>

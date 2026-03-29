@@ -5,23 +5,15 @@ import {
 } from 'recharts'
 import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Wallet, Loader2, ShieldCheck, Pencil, Check, X, Scale, Bell } from 'lucide-react'
 import StatCard from '../components/StatCard'
+import { SkeletonStatCard } from '../components/SkeletonCard'
 import { resumo, listar } from '../api/lancamentos'
 import { evolucao, topCategorias, previsao as fetchPrevisao } from '../api/relatorios'
 import * as usuarioApi from '../api/usuario'
 import * as orcamentosApi from '../api/orcamentos'
+import { fmt, formatDate, MESES, yAxisFmt } from '../utils/formatters'
+import { useMonthNavigation } from '../hooks/useMonthNavigation'
 
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
-const formatDate = (s) => new Date(s + 'T12:00:00').toLocaleDateString('pt-BR')
-
-const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
-
-const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-
-function yAxisFmt(v) {
-  if (Math.abs(v) >= 1000) return `R$${(v / 1000).toFixed(0)}k`
-  return `R$${v}`
-}
+const COLORS = ['#14b8a6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
 
 function CustomTooltipBar({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -48,9 +40,7 @@ function CustomTooltipPie({ active, payload }) {
 }
 
 export default function Dashboard() {
-  const now = new Date()
-  const [mes, setMes] = useState(now.getMonth() + 1)
-  const [ano, setAno] = useState(now.getFullYear())
+  const { mes, ano, prevMes, nextMes } = useMonthNavigation()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -64,15 +54,6 @@ export default function Dashboard() {
   const [patrimonio, setPatrimonio] = useState(null)
   const [previsao, setPrevisao] = useState(null)
   const [orcamentos, setOrcamentos] = useState([])
-
-  function prevMes() {
-    if (mes === 1) { setMes(12); setAno(a => a - 1) }
-    else setMes(m => m - 1)
-  }
-  function nextMes() {
-    if (mes === 12) { setMes(1); setAno(a => a + 1) }
-    else setMes(m => m + 1)
-  }
 
   useEffect(() => {
     async function load() {
@@ -173,8 +154,8 @@ export default function Dashboard() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <Loader2 size={32} className="animate-spin text-indigo-500" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <SkeletonStatCard /><SkeletonStatCard /><SkeletonStatCard />
         </div>
       ) : (
         <>
@@ -182,7 +163,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <StatCard label="Receitas" value={fmt(dadosResumo.totalReceitas)} icon={TrendingUp} color="emerald" />
             <StatCard label="Despesas" value={fmt(dadosResumo.totalDespesas)} icon={TrendingDown} color="red" />
-            <StatCard label="Saldo" value={fmt(dadosResumo.saldo)} icon={Wallet} color="indigo" />
+            <StatCard label="Saldo" value={fmt(dadosResumo.saldo)} icon={Wallet} color="primary" />
           </div>
 
           {/* Patrimônio + Previsão */}
@@ -369,7 +350,7 @@ export default function Dashboard() {
                     </div>
                     <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all"
-                        style={{ width: `${Math.min(o.percentualUsado, 100)}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#6366f1' }} />
+                        style={{ width: `${Math.min(o.percentualUsado, 100)}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#14b8a6' }} />
                     </div>
                   </div>
                 ))}

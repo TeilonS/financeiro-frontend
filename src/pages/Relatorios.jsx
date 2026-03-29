@@ -97,12 +97,12 @@ function TabEvolucao() {
           </div>
           <p className="text-xl font-semibold text-red-800 dark:text-red-300">{fmt(totalDespesas)}</p>
         </div>
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-4 border border-indigo-100 dark:border-indigo-800">
+        <div className="bg-primary-50 dark:bg-primary-900/20 rounded-2xl p-4 border border-primary-100 dark:border-primary-800">
           <div className="flex items-center gap-2 mb-2">
-            <Wallet size={16} className="text-indigo-600 dark:text-indigo-400" />
-            <span className="text-sm text-indigo-700 dark:text-indigo-400 font-medium">Saldo no Ano</span>
+            <Wallet size={16} className="text-primary-600 dark:text-primary-400" />
+            <span className="text-sm text-primary-700 dark:text-primary-400 font-medium">Saldo no Ano</span>
           </div>
-          <p className={`text-xl font-semibold ${saldo >= 0 ? 'text-indigo-800 dark:text-indigo-300' : 'text-red-700 dark:text-red-400'}`}>{fmt(saldo)}</p>
+          <p className={`text-xl font-semibold ${saldo >= 0 ? 'text-primary-800 dark:text-primary-300' : 'text-red-700 dark:text-red-400'}`}>{fmt(saldo)}</p>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ function TabEvolucao() {
 
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <Loader2 size={28} className="animate-spin text-indigo-500" />
+          <Loader2 size={28} className="animate-spin text-primary-500" />
         </div>
       ) : dados.length === 0 ? (
         <div className="text-center py-16 text-slate-400 dark:text-slate-500 text-sm">Sem dados para {ano}.</div>
@@ -179,7 +179,7 @@ function TabTopCategorias() {
         <div className="flex bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-1 gap-1 shadow-sm">
           {['DESPESA', 'RECEITA'].map(t => (
             <button key={t} onClick={() => setTipo(t)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-indigo-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
               {t === 'DESPESA' ? 'Despesas' : 'Receitas'}
             </button>
           ))}
@@ -190,7 +190,7 @@ function TabTopCategorias() {
 
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <Loader2 size={28} className="animate-spin text-indigo-500" />
+          <Loader2 size={28} className="animate-spin text-primary-500" />
         </div>
       ) : dados.length === 0 ? (
         <div className="text-center py-16 text-slate-400 dark:text-slate-500 text-sm">Sem dados para este período.</div>
@@ -274,7 +274,7 @@ function TabComparativo() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const inputCls = 'px-3 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500'
+  const inputCls = 'px-3 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
 
   async function handleComparar() {
     setLoading(true); setError('')
@@ -326,7 +326,7 @@ function TabComparativo() {
           </div>
         </div>
         <button onClick={handleComparar} disabled={loading}
-          className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
+          className="mt-4 bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
           {loading && <Loader2 size={14} className="animate-spin" />}
           Comparar
         </button>
@@ -394,7 +394,7 @@ export default function Relatorios() {
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t.id ? 'bg-indigo-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+              tab === t.id ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}>
             {t.label}
           </button>

@@ -138,7 +138,7 @@ export default function Extrato() {
             <button key={f.value} onClick={() => setFormato(f.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
                 formato === f.value
-                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  ? 'bg-primary-600 text-white border-primary-600'
                   : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
               }`}>
               {f.label}
@@ -153,26 +153,26 @@ export default function Extrato() {
           onDrop={onDrop}
           className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${
             dragging
-              ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
-              : 'border-slate-200 dark:border-slate-700 hover:border-indigo-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+              ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20'
+              : 'border-slate-200 dark:border-slate-700 hover:border-primary-300 hover:bg-slate-50 dark:hover:bg-slate-800'
           }`}
         >
           {uploadLoading ? (
             <div className="flex flex-col items-center gap-3">
-              <Loader2 size={32} className="animate-spin text-indigo-500" />
+              <Loader2 size={32} className="animate-spin text-primary-500" />
               <p className="text-sm text-slate-500 dark:text-slate-400">Processando arquivo...</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center">
-                <FileUp size={22} className="text-indigo-500" />
+              <div className="w-12 h-12 bg-primary-50 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center">
+                <FileUp size={22} className="text-primary-500" />
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Arraste ou clique para selecionar</p>
                 <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Formato selecionado: <strong>{FORMATOS.find(f => f.value === formato)?.label}</strong></p>
               </div>
               <button type="button"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+                className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
                 onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}>
                 <Upload size={14} /> Selecionar arquivo
               </button>
@@ -222,21 +222,21 @@ export default function Extrato() {
       </div>
 
       {selecionados.length > 0 && (
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 mb-4 flex flex-wrap items-center gap-3">
-          <CheckSquare size={16} className="text-indigo-600 dark:text-indigo-400" />
-          <span className="text-sm font-medium text-indigo-700 dark:text-indigo-400">{selecionados.length} selecionada(s)</span>
+        <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-2xl p-4 mb-4 flex flex-wrap items-center gap-3">
+          <CheckSquare size={16} className="text-primary-600 dark:text-primary-400" />
+          <span className="text-sm font-medium text-primary-700 dark:text-primary-400">{selecionados.length} selecionada(s)</span>
           <select
             value={loteCategoria} onChange={e => setLoteCategoria(e.target.value)}
-            className="flex-1 min-w-[180px] px-3 py-1.5 border border-indigo-200 dark:border-indigo-700 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="flex-1 min-w-[180px] px-3 py-1.5 border border-primary-200 dark:border-primary-700 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
             <option value="">Selecionar categoria...</option>
             {categorias.map(c => <option key={c.id} value={c.id}>{c.nome} ({c.tipo})</option>)}
           </select>
           <button onClick={handleConfirmarLote} disabled={!loteCategoria || loteLoading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-1.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
             {loteLoading && <Loader2 size={13} className="animate-spin" />}
             Confirmar todas
           </button>
-          <button onClick={() => setSelecionados([])} className="text-sm text-indigo-500 dark:text-indigo-400 hover:text-indigo-700">Cancelar</button>
+          <button onClick={() => setSelecionados([])} className="text-sm text-primary-500 dark:text-primary-400 hover:text-primary-700">Cancelar</button>
         </div>
       )}
 
@@ -244,7 +244,7 @@ export default function Extrato() {
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Pendentes anteriores</h2>
         {pendentesLoading ? (
           <div className="flex items-center justify-center h-24">
-            <Loader2 size={24} className="animate-spin text-indigo-500" />
+            <Loader2 size={24} className="animate-spin text-primary-500" />
           </div>
         ) : pendentesExist.length === 0 ? (
           <p className="text-slate-400 dark:text-slate-500 text-sm text-center py-8">Nenhuma transação pendente.</p>
@@ -274,7 +274,7 @@ export default function Extrato() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Categoria</label>
               <select
                 value={confirmCatId} onChange={(e) => setConfirmCatId(e.target.value)}
-                className="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <option value="">Sem categoria</option>
                 {categorias
                   .filter(c => !confirmModal.tipo || c.tipo === confirmModal.tipo)
@@ -307,7 +307,7 @@ function PendentesList({ items, categorias, onConfirmar, onIgnorar, selecionados
         <div key={item.id} className="flex items-center justify-between py-3 gap-3">
           {onToggle && (
             <input type="checkbox" checked={selecionados.includes(item.id)} onChange={() => onToggle(item.id)}
-              className="w-4 h-4 rounded border-slate-300 text-indigo-600 cursor-pointer shrink-0" />
+              className="w-4 h-4 rounded border-slate-300 text-primary-600 cursor-pointer shrink-0" />
           )}
           <div className="flex items-center gap-3 min-w-0">
             <div className={`w-2 h-2 rounded-full shrink-0 ${item.tipo === 'RECEITA' ? 'bg-emerald-400' : 'bg-red-400'}`} />
@@ -316,7 +316,7 @@ function PendentesList({ items, categorias, onConfirmar, onIgnorar, selecionados
               <p className="text-xs text-slate-400 dark:text-slate-500">
                 {formatDate(item.data)}
                 {item.categoriaSugeridaNome && (
-                  <span className="ml-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded font-medium">
+                  <span className="ml-2 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-1.5 py-0.5 rounded font-medium">
                     {item.categoriaSugeridaNome}
                   </span>
                 )}
@@ -331,7 +331,7 @@ function PendentesList({ items, categorias, onConfirmar, onIgnorar, selecionados
               {item.tipo}
             </span>
             <button onClick={() => onConfirmar(item)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1">
+              className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1">
               <CheckCircle size={12} /> Confirmar
             </button>
             <button onClick={() => onIgnorar(item)}

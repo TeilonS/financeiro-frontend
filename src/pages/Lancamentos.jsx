@@ -1,56 +1,47 @@
 import { useState, useEffect } from 'react'
-import { Plus, Download, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight, AlertCircle, Search } from 'lucide-react'
+import { Plus, Download, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight, Search, Receipt } from 'lucide-react'
+import toast from 'react-hot-toast'
 import Modal from '../components/Modal'
+import ConfirmModal from '../components/ConfirmModal'
+import EmptyState from '../components/EmptyState'
 import * as lancApi from '../api/lancamentos'
 import * as catApi from '../api/categorias'
-
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
-const formatDate = (s) => s ? new Date(s + 'T12:00:00').toLocaleDateString('pt-BR') : '—'
-
-const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+import { fmt, formatDate, MESES } from '../utils/formatters'
+import { useMonthNavigation } from '../hooks/useMonthNavigation'
 
 const EMPTY_FORM = { descricao: '', valor: '', data: '', tipo: 'DESPESA', categoriaId: '' }
 
-const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500'
+const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
 
 export default function Lancamentos() {
-  const now = new Date()
-  const [mes, setMes] = useState(now.getMonth() + 1)
-  const [ano, setAno] = useState(now.getFullYear())
+  const { mes, ano, prevMes, nextMes } = useMonthNavigation()
   const [tipoFiltro, setTipoFiltro] = useState('TODOS')
   const [lancamentos, setLancamentos] = useState([])
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editando, setEditando] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState('')
-  const [deletandoId, setDeletandoId] = useState(null)
+  const [confirmId, setConfirmId] = useState(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [exportLoading, setExportLoading] = useState(false)
   const [busca, setBusca] = useState('')
 
-  function prevMes() {
-    if (mes === 1) { setMes(12); setAno(a => a - 1) }
-    else setMes(m => m - 1)
-  }
-  function nextMes() {
-    if (mes === 12) { setMes(1); setAno(a => a + 1) }
-    else setMes(m => m + 1)
-  }
-
   async function loadData() {
-    setLoading(true); setError('')
+    setLoading(true)
     try {
       const params = { mes, ano, ...(tipoFiltro !== 'TODOS' ? { tipo: tipoFiltro } : {}) }
       const [resLanc, resCats] = await Promise.all([lancApi.listar(params), catApi.listar()])
       const arr = Array.isArray(resLanc.data) ? resLanc.data : resLanc.data?.content || []
       setLancamentos(arr)
       setCategorias(resCats.data || [])
-    } catch { setError('Erro ao carregar lançamentos.') }
-    finally { setLoading(false) }
+    } catch {
+      toast.error('Erro ao carregar lançamentos.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { loadData() }, [mes, ano, tipoFiltro])
@@ -70,14 +61,28 @@ export default function Lancamentos() {
       const payload = { descricao: form.descricao, valor: parseFloat(form.valor), data: form.data, tipo: form.tipo, categoriaId: form.categoriaId ? parseInt(form.categoriaId) : null }
       if (editando) await lancApi.atualizar(editando.id, payload)
       else await lancApi.criar(payload)
-      setModalOpen(false); loadData()
-    } catch (err) { setFormError(err.response?.data?.mensagem || 'Erro ao salvar lançamento.') }
-    finally { setFormLoading(false) }
+      setModalOpen(false)
+      toast.success(editando ? 'Lançamento atualizado!' : 'Lançamento criado!')
+      loadData()
+    } catch (err) {
+      setFormError(err.response?.data?.mensagem || 'Erro ao salvar lançamento.')
+    } finally {
+      setFormLoading(false)
+    }
   }
 
-  async function handleDelete(id) {
-    try { await lancApi.deletar(id); setDeletandoId(null); loadData() }
-    catch { setError('Erro ao excluir lançamento.') }
+  async function handleDelete() {
+    setDeleteLoading(true)
+    try {
+      await lancApi.deletar(confirmId)
+      setConfirmId(null)
+      toast.success('Lançamento excluído.')
+      loadData()
+    } catch {
+      toast.error('Erro ao excluir lançamento.')
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   async function handleExport() {
@@ -89,8 +94,11 @@ export default function Lancamentos() {
       const a = document.createElement('a')
       a.href = url; a.download = `lancamentos-${ano}-${String(mes).padStart(2, '0')}.csv`; a.click()
       URL.revokeObjectURL(url)
-    } catch { setError('Erro ao exportar CSV.') }
-    finally { setExportLoading(false) }
+    } catch {
+      toast.error('Erro ao exportar CSV.')
+    } finally {
+      setExportLoading(false)
+    }
   }
 
   const catsFiltradas = categorias.filter(c => c.tipo === form.tipo)
@@ -113,17 +121,11 @@ export default function Lancamentos() {
             Exportar CSV
           </button>
           <button onClick={openNew}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
             <Plus size={16} /> Novo lançamento
           </button>
         </div>
       </div>
-
-      {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-4 flex items-center gap-2">
-          <AlertCircle size={16} />{error}
-        </div>
-      )}
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-5">
@@ -141,13 +143,13 @@ export default function Lancamentos() {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input type="text" value={busca} onChange={e => setBusca(e.target.value)}
             placeholder="Buscar descrição ou categoria..."
-            className="w-full pl-8 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            className="w-full pl-8 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
         </div>
 
         <div className="flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-1 gap-1 shadow-sm">
           {['TODOS', 'RECEITA', 'DESPESA'].map(t => (
             <button key={t} onClick={() => setTipoFiltro(t)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipoFiltro === t ? 'bg-indigo-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipoFiltro === t ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
               {t === 'TODOS' ? 'Todos' : t === 'RECEITA' ? 'Receitas' : 'Despesas'}
             </button>
           ))}
@@ -157,12 +159,20 @@ export default function Lancamentos() {
       {/* Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center h-48"><Loader2 size={28} className="animate-spin text-indigo-500" /></div>
-        ) : lancamentosFiltrados.length === 0 ? (
-          <div className="text-center py-16 text-slate-400">
-            <p className="text-base font-medium mb-1">Nenhum lançamento encontrado</p>
-            <p className="text-sm">Adicione um novo lançamento para começar.</p>
+          <div className="flex items-center justify-center h-48">
+            <Loader2 size={28} className="animate-spin text-primary-500" />
           </div>
+        ) : lancamentosFiltrados.length === 0 ? (
+          <EmptyState
+            icon={Receipt}
+            title="Nenhum lançamento encontrado"
+            description="Adicione um novo lançamento para começar a registrar suas finanças."
+            action={
+              <button onClick={openNew} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+                <Plus size={14} /> Novo lançamento
+              </button>
+            }
+          />
         ) : (
           <table className="w-full">
             <thead>
@@ -182,7 +192,7 @@ export default function Lancamentos() {
                   <td className="px-6 py-4 text-sm font-medium text-slate-800 dark:text-slate-200">{l.descricao}</td>
                   <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">{l.categoriaNome || l.categoria?.nome || '—'}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${l.tipo === 'RECEITA' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${l.tipo === 'RECEITA' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'}`}>
                       {l.tipo}
                     </span>
                   </td>
@@ -191,22 +201,12 @@ export default function Lancamentos() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
-                      {deletandoId === l.id ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-500 dark:text-slate-400">Confirmar?</span>
-                          <button onClick={() => handleDelete(l.id)} className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg">Sim</button>
-                          <button onClick={() => setDeletandoId(null)} className="text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 px-2 py-1 rounded-lg">Não</button>
-                        </div>
-                      ) : (
-                        <>
-                          <button onClick={() => openEdit(l)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
-                            <Pencil size={15} />
-                          </button>
-                          <button onClick={() => setDeletandoId(l.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500">
-                            <Trash2 size={15} />
-                          </button>
-                        </>
-                      )}
+                      <button onClick={() => openEdit(l)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+                        <Pencil size={15} />
+                      </button>
+                      <button onClick={() => setConfirmId(l.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500">
+                        <Trash2 size={15} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -215,6 +215,15 @@ export default function Lancamentos() {
           </table>
         )}
       </div>
+
+      <ConfirmModal
+        open={confirmId !== null}
+        onClose={() => setConfirmId(null)}
+        onConfirm={handleDelete}
+        loading={deleteLoading}
+        title="Excluir lançamento"
+        description="Esta ação não pode ser desfeita."
+      />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editando ? 'Editar lançamento' : 'Novo lançamento'}>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -249,7 +258,7 @@ export default function Lancamentos() {
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl">{formError}</div>}
           <div className="flex gap-3 pt-1">
             <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-sm font-medium">Cancelar</button>
-            <button type="submit" disabled={formLoading} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
+            <button type="submit" disabled={formLoading} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
               {formLoading && <Loader2 size={14} className="animate-spin" />}
               {editando ? 'Salvar alterações' : 'Criar lançamento'}
             </button>

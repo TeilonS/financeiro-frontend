@@ -7,7 +7,7 @@ import * as catApi from '../api/categorias'
 const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
-const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500'
+const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
 
 export default function Orcamentos() {
   const now = new Date()
@@ -73,7 +73,7 @@ export default function Orcamentos() {
             </button>
           </div>
           <button onClick={() => { setForm({ categoriaId: '', valorLimite: '' }); setFormError(''); setModalOpen(true) }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
             <Plus size={16} /> Novo orçamento
           </button>
         </div>
@@ -86,7 +86,7 @@ export default function Orcamentos() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center h-48"><Loader2 size={28} className="animate-spin text-indigo-500" /></div>
+        <div className="flex items-center justify-center h-48"><Loader2 size={28} className="animate-spin text-primary-500" /></div>
       ) : orcamentos.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center py-16 text-slate-400 dark:text-slate-500">
           <PiggyBank size={40} className="mx-auto mb-3 opacity-30" />
@@ -113,7 +113,7 @@ export default function Orcamentos() {
                 </div>
                 <div className="h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all"
-                    style={{ width: `${o.percentualUsado}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#6366f1' }} />
+                    style={{ width: `${o.percentualUsado}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#14b8a6' }} />
                 </div>
               </div>
               <div className="flex justify-between items-center">
@@ -146,7 +146,7 @@ export default function Orcamentos() {
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl">{formError}</div>}
           <div className="flex gap-3 pt-1">
             <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-sm font-medium">Cancelar</button>
-            <button type="submit" disabled={formLoading} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
+            <button type="submit" disabled={formLoading} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
               {formLoading && <Loader2 size={14} className="animate-spin" />} Criar
             </button>
           </div>
