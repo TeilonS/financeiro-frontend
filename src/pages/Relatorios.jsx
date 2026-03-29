@@ -6,17 +6,9 @@ import {
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, TrendingDown, Wallet } from 'lucide-react'
 import * as relApi from '../api/relatorios'
 
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
+import { fmt, MESES, yAxisFmt } from '../utils/formatters'
 
-const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#84cc16']
-
-const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-
-function yAxisFmt(v) {
-  if (Math.abs(v) >= 1000) return `R$${(v / 1000).toFixed(0)}k`
-  return `R$${v}`
-}
+const COLORS = ['#14b8a6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#84cc16']
 
 function CustomTooltipBar({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -179,7 +171,7 @@ function TabTopCategorias() {
         <div className="flex bg-zinc-800 border border-zinc-700 rounded-xl p-1 gap-1 shadow-sm">
           {['DESPESA', 'RECEITA'].map(t => (
             <button key={t} onClick={() => setTipo(t)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-zinc-800 dark:hover:bg-zinc-800'}`}>
               {t === 'DESPESA' ? 'Despesas' : 'Receitas'}
             </button>
           ))}
@@ -247,9 +239,9 @@ function TabTopCategorias() {
                 })}
               </tbody>
               <tfoot>
-                <tr className="border-t border-zinc-700 bg-slate-50 dark:bg-zinc-800">
+                <tr className="border-t border-zinc-700 bg-zinc-800 dark:bg-zinc-800">
                   <td colSpan={2} className="px-5 py-3 text-sm font-semibold text-zinc-300">Total</td>
-                  <td className="px-5 py-3 text-sm font-semibold text-right text-slate-800 dark:text-white">{fmt(total)}</td>
+                  <td className="px-5 py-3 text-sm font-semibold text-right text-zinc-500 dark:text-white">{fmt(total)}</td>
                   <td className="px-5 py-3 text-sm text-right text-zinc-500">100%</td>
                 </tr>
               </tfoot>
@@ -286,7 +278,7 @@ function TabComparativo() {
   }
 
   function variationClass(v, invertido = false) {
-    if (v === null || v === undefined || isNaN(v)) return 'text-slate-400'
+    if (v === null || v === undefined || isNaN(v)) return 'text-zinc-500'
     if (invertido) return v > 0 ? 'text-red-600' : 'text-emerald-600'
     return v >= 0 ? 'text-emerald-600' : 'text-red-600'
   }
@@ -338,7 +330,7 @@ function TabComparativo() {
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-zinc-800 bg-slate-50 dark:bg-zinc-800">
+              <tr className="border-b border-zinc-800 bg-zinc-800 dark:bg-zinc-800">
                 <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">Indicador</th>
                 <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">{mesLabelA}</th>
                 <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">{mesLabelB}</th>
@@ -358,7 +350,7 @@ function TabComparativo() {
                 <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.atual?.totalDespesas)}</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoDespesas, true)}`}>{variationLabel(dados.variacaoDespesas)}</td>
               </tr>
-              <tr className="hover:bg-zinc-800/40 bg-slate-50/30 dark:bg-zinc-800/30">
+              <tr className="hover:bg-zinc-800/40 bg-zinc-800/30 dark:bg-zinc-800/30">
                 <td className="px-6 py-4 text-sm font-semibold text-zinc-200">Saldo</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${(dados.anterior?.saldo ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(dados.anterior?.saldo)}</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${(dados.atual?.saldo ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(dados.atual?.saldo)}</td>
@@ -394,7 +386,7 @@ export default function Relatorios() {
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t.id ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-slate-50 dark:hover:bg-slate-700'
+              tab === t.id ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-zinc-800 dark:hover:bg-zinc-800'
             }`}>
             {t.label}
           </button>

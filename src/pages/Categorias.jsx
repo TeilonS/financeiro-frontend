@@ -81,9 +81,9 @@ export default function Categorias() {
         <div className="flex items-center justify-center h-48"><Loader2 size={28} className="animate-spin text-primary-500" /></div>
       ) : categorias.length === 0 ? (
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-16 text-center">
-          <Tag size={36} className="text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 font-medium">Nenhuma categoria cadastrada</p>
-          <p className="text-slate-400 text-sm mt-1">Crie categorias para organizar seus lançamentos.</p>
+          <Tag size={36} className="text-zinc-500 mx-auto mb-3" />
+          <p className="text-zinc-500 font-medium">Nenhuma categoria cadastrada</p>
+          <p className="text-zinc-500 text-sm mt-1">Crie categorias para organizar seus lançamentos.</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -158,7 +158,7 @@ function CategoryGroup({ title, categories, subcats, deletandoId, setDeletandoId
             <CategoryCard cat={c} deletandoId={deletandoId} setDeletandoId={setDeletandoId} handleDelete={handleDelete} isRoot />
             {subcats.filter(s => s.categoriaPaiId === c.id).map(s => (
               <div key={s.id} className="ml-6 mt-1.5 flex items-center gap-2">
-                <ChevronRight size={12} className="text-slate-300 dark:text-slate-600 shrink-0" />
+                <ChevronRight size={12} className="text-zinc-500 dark:text-zinc-500 shrink-0" />
                 <CategoryCard cat={s} deletandoId={deletandoId} setDeletandoId={setDeletandoId} handleDelete={handleDelete} />
               </div>
             ))}
@@ -182,11 +182,11 @@ function CategoryCard({ cat, deletandoId, setDeletandoId, handleDelete, isRoot }
       {deletandoId === cat.id ? (
         <div className="flex items-center gap-1.5">
           <button onClick={() => handleDelete(cat.id)} className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg">Sim</button>
-          <button onClick={() => setDeletandoId(null)} className="text-xs text-slate-600 text-zinc-300 bg-slate-100 bg-zinc-700 hover:bg-slate-200 px-2 py-1 rounded-lg">Não</button>
+          <button onClick={() => setDeletandoId(null)} className="text-xs text-zinc-300 bg-zinc-700 hover:bg-zinc-800 px-2 py-1 rounded-lg">Não</button>
         </div>
       ) : (
         <button onClick={() => setDeletandoId(cat.id)}
-          className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+          className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-zinc-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
           <Trash2 size={14} />
         </button>
       )}

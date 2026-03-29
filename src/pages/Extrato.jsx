@@ -3,9 +3,7 @@ import { FileUp, Loader2, CheckCircle, XCircle, AlertCircle, Upload, CheckSquare
 import Modal from '../components/Modal'
 import * as extratoApi from '../api/extrato'
 import * as catApi from '../api/categorias'
-
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
-const formatDate = (s) => s ? new Date(s + 'T12:00:00').toLocaleDateString('pt-BR') : '—'
+import { fmt, formatDate } from '../utils/formatters'
 
 const FORMATOS = [
   { value: 'OFX', label: 'OFX' },
@@ -139,7 +137,7 @@ export default function Extrato() {
               className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
                 formato === f.value
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'border-zinc-700 text-slate-600 text-zinc-300 hover:bg-zinc-800'
+                  : 'border-zinc-700 text-zinc-300 hover:bg-zinc-800'
               }`}>
               {f.label}
             </button>
@@ -189,9 +187,9 @@ export default function Extrato() {
 
         {uploadResult && (
           <div className="mt-5 space-y-3">
-            <div className="bg-slate-50 dark:bg-zinc-800 border border-zinc-800 rounded-xl px-4 py-3 text-sm flex flex-wrap gap-4">
-              <span className="text-slate-600 text-zinc-300">
-                <strong className="text-slate-800 dark:text-white">{uploadResult.totalTransacoes}</strong> transações importadas
+            <div className="bg-zinc-800 dark:bg-zinc-800 border border-zinc-800 rounded-xl px-4 py-3 text-sm flex flex-wrap gap-4">
+              <span className="text-zinc-300">
+                <strong className="text-zinc-500 dark:text-white">{uploadResult.totalTransacoes}</strong> transações importadas
               </span>
               {uploadResult.autoConfirmadas > 0 && (
                 <span className="text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
@@ -260,7 +258,7 @@ export default function Extrato() {
       <Modal open={!!confirmModal} onClose={() => setConfirmModal(null)} title="Confirmar transação" maxWidth="max-w-md">
         {confirmModal && (
           <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-zinc-800 rounded-xl p-4 text-sm">
+            <div className="bg-zinc-800 dark:bg-zinc-800 rounded-xl p-4 text-sm">
               <p className="font-medium text-zinc-200">{confirmModal.descricao}</p>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-zinc-500">{formatDate(confirmModal.data)}</span>
@@ -307,7 +305,7 @@ function PendentesList({ items, categorias, onConfirmar, onIgnorar, selecionados
         <div key={item.id} className="flex items-center justify-between py-3 gap-3">
           {onToggle && (
             <input type="checkbox" checked={selecionados.includes(item.id)} onChange={() => onToggle(item.id)}
-              className="w-4 h-4 rounded border-slate-300 text-primary-600 cursor-pointer shrink-0" />
+              className="w-4 h-4 rounded border-zinc-700 text-primary-600 cursor-pointer shrink-0" />
           )}
           <div className="flex items-center gap-3 min-w-0">
             <div className={`w-2 h-2 rounded-full shrink-0 ${item.tipo === 'RECEITA' ? 'bg-emerald-400' : 'bg-red-400'}`} />

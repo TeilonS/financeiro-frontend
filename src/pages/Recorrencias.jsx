@@ -3,11 +3,8 @@ import { Plus, Trash2, Loader2, RefreshCw, CheckCircle, AlertCircle, ChevronLeft
 import Modal from '../components/Modal'
 import * as recApi from '../api/recorrencias'
 import * as catApi from '../api/categorias'
-
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
-
-const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+import { fmt, MESES } from '../utils/formatters'
+import { useMonthNavigation } from '../hooks/useMonthNavigation'
 
 const FREQUENCIAS = [
   { value: 'MENSAL', label: 'Mensal' },
@@ -23,9 +20,7 @@ const EMPTY_FORM = {
 const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Recorrencias() {
-  const now = new Date()
-  const [mes, setMes] = useState(now.getMonth() + 1)
-  const [ano, setAno] = useState(now.getFullYear())
+  const { mes, ano, prevMes, nextMes } = useMonthNavigation()
   const [recorrencias, setRecorrencias] = useState([])
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(true)
@@ -37,13 +32,6 @@ export default function Recorrencias() {
   const [desativandoId, setDesativandoId] = useState(null)
   const [gerarLoading, setGerarLoading] = useState(false)
   const [gerarResult, setGerarResult] = useState(null)
-
-  function prevMes() {
-    if (mes === 1) { setMes(12); setAno(a => a - 1) } else setMes(m => m - 1)
-  }
-  function nextMes() {
-    if (mes === 12) { setMes(1); setAno(a => a + 1) } else setMes(m => m + 1)
-  }
 
   async function loadData() {
     setLoading(true); setError('')
@@ -94,7 +82,7 @@ export default function Recorrencias() {
 
   function freqBadge(f) {
     const map = { MENSAL: 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400', SEMANAL: 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400', ANUAL: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' }
-    return map[f] || 'bg-slate-50 dark:bg-zinc-800 text-zinc-400'
+    return map[f] || 'bg-zinc-800 dark:bg-zinc-800 text-zinc-400'
   }
 
   return (
@@ -120,12 +108,12 @@ export default function Recorrencias() {
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-5 mb-6">
         <h2 className="text-sm font-semibold text-zinc-300 mb-4">Gerar lançamentos</h2>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-slate-50 dark:bg-zinc-800 border border-zinc-700 rounded-xl px-2 py-1.5">
-            <button onClick={prevMes} className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors">
+          <div className="flex items-center gap-1 bg-zinc-800 dark:bg-zinc-800 border border-zinc-700 rounded-xl px-2 py-1.5">
+            <button onClick={prevMes} className="p-1 hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-colors">
               <ChevronLeft size={16} className="text-zinc-500" />
             </button>
             <span className="text-sm font-medium text-zinc-300 min-w-[120px] text-center">{mesLabel}</span>
-            <button onClick={nextMes} className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors">
+            <button onClick={nextMes} className="p-1 hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-colors">
               <ChevronRight size={16} className="text-zinc-500" />
             </button>
           </div>
@@ -153,7 +141,7 @@ export default function Recorrencias() {
         </div>
       ) : recorrencias.length === 0 ? (
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-16 text-center">
-          <RefreshCw size={36} className="text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <RefreshCw size={36} className="text-zinc-500 dark:text-zinc-500 mx-auto mb-3" />
           <p className="text-zinc-500 font-medium">Nenhuma recorrência cadastrada</p>
           <p className="text-zinc-500 text-sm mt-1">Crie recorrências para gerar lançamentos automaticamente.</p>
         </div>
@@ -170,7 +158,7 @@ export default function Recorrencias() {
                   {r.ativa ? (
                     <span className="w-2 h-2 bg-emerald-400 rounded-full" title="Ativa" />
                   ) : (
-                    <span className="w-2 h-2 bg-slate-300 dark:bg-slate-600 rounded-full" title="Inativa" />
+                    <span className="w-2 h-2 bg-zinc-800 dark:bg-zinc-800 rounded-full" title="Inativa" />
                   )}
                 </div>
               </div>
@@ -183,7 +171,7 @@ export default function Recorrencias() {
                   {FREQUENCIAS.find(f => f.value === r.frequencia)?.label || r.frequencia}
                 </span>
                 {!r.ativa && (
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 bg-zinc-700 text-zinc-500">
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-zinc-700 text-zinc-500">
                     Inativa
                   </span>
                 )}
@@ -208,11 +196,11 @@ export default function Recorrencias() {
                         <button onClick={() => handleDesativar(r.id)}
                           className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg transition-colors">Sim</button>
                         <button onClick={() => setDesativandoId(null)}
-                          className="text-xs text-slate-600 text-zinc-300 bg-slate-100 bg-zinc-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-2 py-1 rounded-lg transition-colors">Não</button>
+                          className="text-xs text-zinc-300 bg-zinc-700 hover:bg-zinc-800 px-2 py-1 rounded-lg transition-colors">Não</button>
                       </div>
                     ) : (
                       <button onClick={() => setDesativandoId(r.id)}
-                        className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors"
+                        className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl text-zinc-500 dark:text-zinc-500 hover:text-red-500 transition-colors"
                         title="Desativar recorrência">
                         <Trash2 size={15} />
                       </button>

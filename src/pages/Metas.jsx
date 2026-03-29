@@ -3,20 +3,15 @@ import { Plus, Trash2, Loader2, Target, AlertTriangle, ChevronLeft, ChevronRight
 import Modal from '../components/Modal'
 import * as metasApi from '../api/metas'
 import * as catApi from '../api/categorias'
-
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
-
-const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+import { fmt, MESES } from '../utils/formatters'
+import { useMonthNavigation } from '../hooks/useMonthNavigation'
 
 const EMPTY_FORM = { categoriaId: '', valorLimite: '', mes: '', ano: '' }
 
 const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Metas() {
-  const now = new Date()
-  const [mes, setMes] = useState(now.getMonth() + 1)
-  const [ano, setAno] = useState(now.getFullYear())
+  const { mes, ano, prevMes, nextMes } = useMonthNavigation()
   const [metas, setMetas] = useState([])
   const [alertasList, setAlertasList] = useState([])
   const [categorias, setCategorias] = useState([])
@@ -27,15 +22,6 @@ export default function Metas() {
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState('')
   const [deletandoId, setDeletandoId] = useState(null)
-
-  function prevMes() {
-    if (mes === 1) { setMes(12); setAno(a => a - 1) }
-    else setMes(m => m - 1)
-  }
-  function nextMes() {
-    if (mes === 12) { setMes(1); setAno(a => a + 1) }
-    else setMes(m => m + 1)
-  }
 
   async function loadData() {
     setLoading(true)
@@ -164,7 +150,7 @@ export default function Metas() {
         </div>
       ) : metasFiltradas.length === 0 ? (
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-16 text-center">
-          <Target size={36} className="text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <Target size={36} className="text-zinc-500 dark:text-zinc-500 mx-auto mb-3" />
           <p className="text-zinc-500 font-medium">Nenhuma meta para este mês</p>
           <p className="text-zinc-500 text-sm mt-1">Crie metas para controlar seus gastos por categoria.</p>
         </div>
@@ -184,12 +170,12 @@ export default function Metas() {
                       <button onClick={() => handleDelete(m.id)}
                         className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg transition-colors">Sim</button>
                       <button onClick={() => setDeletandoId(null)}
-                        className="text-xs text-slate-600 text-zinc-300 bg-slate-100 bg-zinc-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-2 py-1 rounded-lg transition-colors">Não</button>
+                        className="text-xs text-zinc-300 bg-zinc-700 hover:bg-zinc-800 px-2 py-1 rounded-lg transition-colors">Não</button>
                     </div>
                   ) : (
                     <button
                       onClick={() => setDeletandoId(m.id)}
-                      className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors"
+                      className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-zinc-500 dark:text-zinc-500 hover:text-red-500 transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -203,7 +189,7 @@ export default function Metas() {
                       {pct.toFixed(0)}%
                     </span>
                   </div>
-                  <div className="w-full bg-slate-100 bg-zinc-700 rounded-full h-2">
+                  <div className="w-full bg-zinc-700 rounded-full h-2">
                     <div
                       className={`h-2 rounded-full transition-all ${progressColor(pct)}`}
                       style={{ width: `${Math.min(pct, 100)}%` }}

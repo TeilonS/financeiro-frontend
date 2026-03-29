@@ -3,16 +3,13 @@ import { Plus, Trash2, Loader2, PiggyBank, ChevronLeft, ChevronRight, AlertCircl
 import Modal from '../components/Modal'
 import * as orcApi from '../api/orcamentos'
 import * as catApi from '../api/categorias'
-
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
-const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+import { fmt, MESES } from '../utils/formatters'
+import { useMonthNavigation } from '../hooks/useMonthNavigation'
 
 const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Orcamentos() {
-  const now = new Date()
-  const [mes, setMes] = useState(now.getMonth() + 1)
-  const [ano, setAno] = useState(now.getFullYear())
+  const { mes, ano, prevMes, nextMes } = useMonthNavigation()
   const [orcamentos, setOrcamentos] = useState([])
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,9 +18,6 @@ export default function Orcamentos() {
   const [form, setForm] = useState({ categoriaId: '', valorLimite: '' })
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState('')
-
-  function prevMes() { if (mes === 1) { setMes(12); setAno(a => a-1) } else setMes(m => m-1) }
-  function nextMes() { if (mes === 12) { setMes(1); setAno(a => a+1) } else setMes(m => m+1) }
 
   async function load() {
     setLoading(true)
@@ -102,7 +96,7 @@ export default function Orcamentos() {
                   <p className="font-semibold text-zinc-200">{o.categoriaNome}</p>
                   <p className="text-xs text-zinc-500 mt-0.5">{o.categoriaTipo === 'DESPESA' ? 'Despesa' : 'Receita'}</p>
                 </div>
-                <button onClick={() => handleDelete(o.id)} className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 dark:text-slate-600 hover:text-red-500 transition-colors">
+                <button onClick={() => handleDelete(o.id)} className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-zinc-500 dark:text-zinc-500 hover:text-red-500 transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>
@@ -111,7 +105,7 @@ export default function Orcamentos() {
                   <span>Gasto: <strong className={o.percentualUsado >= 100 ? 'text-red-600' : 'text-zinc-300'}>{fmt(o.valorGasto)}</strong></span>
                   <span>Limite: {fmt(o.valorLimite)}</span>
                 </div>
-                <div className="h-2.5 bg-slate-100 bg-zinc-700 rounded-full overflow-hidden">
+                <div className="h-2.5 bg-zinc-700 rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all"
                     style={{ width: `${o.percentualUsado}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#14b8a6' }} />
                 </div>

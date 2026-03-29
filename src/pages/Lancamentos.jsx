@@ -131,16 +131,16 @@ export default function Lancamentos() {
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
           <button onClick={prevMes} className="p-1 hover:bg-zinc-800 rounded-lg">
-            <ChevronLeft size={16} className="text-slate-500" />
+            <ChevronLeft size={16} className="text-zinc-500" />
           </button>
-          <span className="text-sm font-medium text-slate-700 text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
+          <span className="text-sm font-medium text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
           <button onClick={nextMes} className="p-1 hover:bg-zinc-800 rounded-lg">
-            <ChevronRight size={16} className="text-slate-500" />
+            <ChevronRight size={16} className="text-zinc-500" />
           </button>
         </div>
 
         <div className="relative flex-1 max-w-xs">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
           <input type="text" value={busca} onChange={e => setBusca(e.target.value)}
             placeholder="Buscar descrição ou categoria..."
             className="w-full pl-8 pr-4 py-2 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500" />
@@ -201,10 +201,10 @@ export default function Lancamentos() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(l)} className="p-2 hover:bg-zinc-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+                      <button onClick={() => openEdit(l)} className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-500 dark:hover:text-zinc-500">
                         <Pencil size={15} />
                       </button>
-                      <button onClick={() => setConfirmId(l.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500">
+                      <button onClick={() => setConfirmId(l.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-zinc-500 hover:text-red-500">
                         <Trash2 size={15} />
                       </button>
                     </div>

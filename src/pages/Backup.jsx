@@ -111,7 +111,7 @@ export default function Backup() {
         </div>
 
         {/* Info */}
-        <div className="bg-slate-50 dark:bg-zinc-800 rounded-2xl border border-zinc-800 p-5">
+        <div className="bg-zinc-800 dark:bg-zinc-800 rounded-2xl border border-zinc-800 p-5">
           <div className="flex items-center gap-2 mb-3">
             <HardDrive size={16} className="text-zinc-500" />
             <span className="text-sm font-medium text-zinc-300">O que é incluído no backup</span>

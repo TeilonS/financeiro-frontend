@@ -12,16 +12,16 @@ export default function ConfirmModal({ open, onClose, onConfirm, title, descript
             <AlertTriangle size={18} className="text-red-600 dark:text-red-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-slate-900 dark:text-white text-sm">{title}</p>
+            <p className="font-semibold text-zinc-500 dark:text-white text-sm">{title}</p>
             {description && (
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">{description}</p>
+              <p className="text-zinc-500 dark:text-zinc-500 text-xs mt-1">{description}</p>
             )}
           </div>
         </div>
         <div className="flex gap-2 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 py-2 rounded-xl border border-zinc-700 text-zinc-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            className="flex-1 py-2 rounded-xl border border-zinc-700 text-zinc-300 text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-800 transition-colors"
           >
             Cancelar
           </button>

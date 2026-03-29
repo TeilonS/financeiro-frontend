@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Pencil, Trash2, Loader2, CreditCard, AlertCircle } from 'lucide-react'
 import Modal from '../components/Modal'
 import * as cartoesApi from '../api/cartoes'
-
-const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
+import { fmt } from '../utils/formatters'
 
 const CORES = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#ec4899']
 
@@ -128,12 +127,12 @@ export default function Cartoes() {
                     {deletandoId === c.id ? (
                       <div className="flex items-center gap-1">
                         <button onClick={() => handleDelete(c.id)} className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg">Sim</button>
-                        <button onClick={() => setDeletandoId(null)} className="text-xs bg-slate-100 bg-zinc-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-zinc-300 px-2 py-1 rounded-lg">Não</button>
+                        <button onClick={() => setDeletandoId(null)} className="text-xs bg-zinc-700 hover:bg-zinc-800 text-zinc-300 px-2 py-1 rounded-lg">Não</button>
                       </div>
                     ) : (
                       <>
-                        <button onClick={() => openEdit(c)} className="p-1.5 hover:bg-zinc-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"><Pencil size={14} /></button>
-                        <button onClick={() => setDeletandoId(c.id)} className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500"><Trash2 size={14} /></button>
+                        <button onClick={() => openEdit(c)} className="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-500 dark:hover:text-zinc-500"><Pencil size={14} /></button>
+                        <button onClick={() => setDeletandoId(c.id)} className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-zinc-500 hover:text-red-500"><Trash2 size={14} /></button>
                       </>
                     )}
                   </div>
@@ -144,7 +143,7 @@ export default function Cartoes() {
                     <span>Fatura: <strong className="text-zinc-200">{fmt(c.faturaAtual)}</strong></span>
                     <span>Limite: {fmt(c.limite)}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 bg-zinc-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: pct > 80 ? '#ef4444' : pct > 60 ? '#f59e0b' : c.cor }} />
                   </div>
                   <p className="text-xs text-zinc-500 mt-1 text-right">{pct.toFixed(0)}% utilizado</p>
@@ -185,7 +184,7 @@ export default function Cartoes() {
             <div className="flex gap-2 flex-wrap">
               {CORES.map(cor => (
                 <button key={cor} type="button" onClick={() => setForm(f => ({ ...f, cor }))}
-                  className={`w-7 h-7 rounded-full border-2 transition-all ${form.cor === cor ? 'border-slate-800 dark:border-white scale-110' : 'border-transparent'}`}
+                  className={`w-7 h-7 rounded-full border-2 transition-all ${form.cor === cor ? 'border-zinc-700 dark:border-white scale-110' : 'border-transparent'}`}
                   style={{ backgroundColor: cor }} />
               ))}
             </div>
