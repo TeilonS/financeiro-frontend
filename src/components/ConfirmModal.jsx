@@ -6,7 +6,7 @@ export default function ConfirmModal({ open, onClose, onConfirm, title, descript
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-sm p-6">
+      <div className="relative bg-zinc-900 rounded-2xl shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center shrink-0">
             <AlertTriangle size={18} className="text-red-600 dark:text-red-400" />
@@ -21,7 +21,7 @@ export default function ConfirmModal({ open, onClose, onConfirm, title, descript
         <div className="flex gap-2 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            className="flex-1 py-2 rounded-xl border border-zinc-700 text-zinc-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             Cancelar
           </button>

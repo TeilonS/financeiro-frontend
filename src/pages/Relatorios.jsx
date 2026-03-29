@@ -21,8 +21,8 @@ function yAxisFmt(v) {
 function CustomTooltipBar({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-3 text-sm">
-      <p className="font-semibold text-slate-700 dark:text-slate-300 mb-1">{label}</p>
+    <div className="bg-zinc-800 rounded-xl shadow-lg border border-zinc-800 p-3 text-sm">
+      <p className="font-semibold text-zinc-300 mb-1">{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} style={{ color: p.fill }}>
           {p.name}: {fmt(p.value)}
@@ -35,11 +35,11 @@ function CustomTooltipBar({ active, payload, label }) {
 function CustomTooltipPie({ active, payload }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-3 text-sm">
-      <p className="font-semibold text-slate-700 dark:text-slate-300">{payload[0].name}</p>
-      <p className="text-slate-600 dark:text-slate-400">{fmt(payload[0].value)}</p>
+    <div className="bg-zinc-800 rounded-xl shadow-lg border border-zinc-800 p-3 text-sm">
+      <p className="font-semibold text-zinc-300">{payload[0].name}</p>
+      <p className="text-zinc-400">{fmt(payload[0].value)}</p>
       {payload[0].payload?.percentual !== undefined && (
-        <p className="text-slate-400 dark:text-slate-500">{payload[0].payload.percentual?.toFixed(1)}%</p>
+        <p className="text-zinc-500">{payload[0].payload.percentual?.toFixed(1)}%</p>
       )}
     </div>
   )
@@ -73,12 +73,12 @@ function TabEvolucao() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-6">
-        <button onClick={() => setAno(a => a - 1)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-          <ChevronLeft size={16} className="text-slate-500 dark:text-slate-400" />
+        <button onClick={() => setAno(a => a - 1)} className="p-2 hover:bg-zinc-800 rounded-xl transition-colors">
+          <ChevronLeft size={16} className="text-zinc-500" />
         </button>
-        <span className="text-base font-semibold text-slate-700 dark:text-slate-300 min-w-[60px] text-center">{ano}</span>
-        <button onClick={() => setAno(a => a + 1)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-          <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
+        <span className="text-base font-semibold text-zinc-300 min-w-[60px] text-center">{ano}</span>
+        <button onClick={() => setAno(a => a + 1)} className="p-2 hover:bg-zinc-800 rounded-xl transition-colors">
+          <ChevronRight size={16} className="text-zinc-500" />
         </button>
       </div>
 
@@ -113,9 +113,9 @@ function TabEvolucao() {
           <Loader2 size={28} className="animate-spin text-primary-500" />
         </div>
       ) : dados.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 dark:text-slate-500 text-sm">Sem dados para {ano}.</div>
+        <div className="text-center py-16 text-zinc-500 text-sm">Sem dados para {ano}.</div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6">
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
           <ResponsiveContainer width="100%" height={360}>
             <BarChart data={dados} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -167,19 +167,19 @@ function TabTopCategorias() {
   return (
     <div>
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <div className="flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1.5 shadow-sm">
-          <button onClick={prevMes} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <ChevronLeft size={16} className="text-slate-500 dark:text-slate-400" />
+        <div className="flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
+          <button onClick={prevMes} className="p-1 hover:bg-zinc-700 rounded-lg transition-colors">
+            <ChevronLeft size={16} className="text-zinc-500" />
           </button>
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 min-w-[120px] text-center">{mesLabel}</span>
-          <button onClick={nextMes} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
+          <span className="text-sm font-medium text-zinc-300 min-w-[120px] text-center">{mesLabel}</span>
+          <button onClick={nextMes} className="p-1 hover:bg-zinc-700 rounded-lg transition-colors">
+            <ChevronRight size={16} className="text-zinc-500" />
           </button>
         </div>
-        <div className="flex bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-1 gap-1 shadow-sm">
+        <div className="flex bg-zinc-800 border border-zinc-700 rounded-xl p-1 gap-1 shadow-sm">
           {['DESPESA', 'RECEITA'].map(t => (
             <button key={t} onClick={() => setTipo(t)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
               {t === 'DESPESA' ? 'Despesas' : 'Receitas'}
             </button>
           ))}
@@ -193,10 +193,10 @@ function TabTopCategorias() {
           <Loader2 size={28} className="animate-spin text-primary-500" />
         </div>
       ) : dados.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 dark:text-slate-500 text-sm">Sem dados para este período.</div>
+        <div className="text-center py-16 text-zinc-500 text-sm">Sem dados para este período.</div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6">
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
                 <Pie data={dados} dataKey="total" nameKey="categoriaNome" cx="50%" cy="50%" innerRadius={65} outerRadius={100}>
@@ -210,47 +210,47 @@ function TabTopCategorias() {
                 <div key={i} className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                    <span className="text-slate-600 dark:text-slate-400 truncate">{cat.categoriaNome}</span>
+                    <span className="text-zinc-400 truncate">{cat.categoriaNome}</span>
                   </div>
-                  <span className="text-slate-500 dark:text-slate-400 ml-2 flex-shrink-0">{cat.percentual}%</span>
+                  <span className="text-zinc-500 ml-2 flex-shrink-0">{cat.percentual}%</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800">
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wide px-5 py-3">#</th>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wide px-5 py-3">Categoria</th>
-                  <th className="text-right text-xs font-medium text-slate-400 uppercase tracking-wide px-5 py-3">Valor</th>
-                  <th className="text-right text-xs font-medium text-slate-400 uppercase tracking-wide px-5 py-3">%</th>
+                <tr className="border-b border-zinc-800">
+                  <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">#</th>
+                  <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">Categoria</th>
+                  <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">Valor</th>
+                  <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">%</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+              <tbody className="divide-y divide-zinc-800">
                 {dados.map((d, i) => {
                   const pct = total > 0 ? (d.total / total) * 100 : 0
                   return (
-                    <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                    <tr key={i} className="hover:bg-zinc-800/40">
                       <td className="px-5 py-3">
                         <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold text-white"
                           style={{ backgroundColor: COLORS[i % COLORS.length] }}>
                           {i + 1}
                         </div>
                       </td>
-                      <td className="px-5 py-3 text-sm font-medium text-slate-800 dark:text-slate-200">{d.categoriaNome}</td>
-                      <td className="px-5 py-3 text-sm font-semibold text-right text-slate-700 dark:text-slate-300">{fmt(d.total)}</td>
-                      <td className="px-5 py-3 text-sm text-right text-slate-500 dark:text-slate-400">{pct.toFixed(1)}%</td>
+                      <td className="px-5 py-3 text-sm font-medium text-zinc-200">{d.categoriaNome}</td>
+                      <td className="px-5 py-3 text-sm font-semibold text-right text-zinc-300">{fmt(d.total)}</td>
+                      <td className="px-5 py-3 text-sm text-right text-zinc-500">{pct.toFixed(1)}%</td>
                     </tr>
                   )
                 })}
               </tbody>
               <tfoot>
-                <tr className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
-                  <td colSpan={2} className="px-5 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300">Total</td>
+                <tr className="border-t border-zinc-700 bg-slate-50 dark:bg-zinc-800">
+                  <td colSpan={2} className="px-5 py-3 text-sm font-semibold text-zinc-300">Total</td>
                   <td className="px-5 py-3 text-sm font-semibold text-right text-slate-800 dark:text-white">{fmt(total)}</td>
-                  <td className="px-5 py-3 text-sm text-right text-slate-500 dark:text-slate-400">100%</td>
+                  <td className="px-5 py-3 text-sm text-right text-zinc-500">100%</td>
                 </tr>
               </tfoot>
             </table>
@@ -274,7 +274,7 @@ function TabComparativo() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const inputCls = 'px-3 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
+  const inputCls = 'px-3 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
   async function handleComparar() {
     setLoading(true); setError('')
@@ -301,11 +301,11 @@ function TabComparativo() {
 
   return (
     <div>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 mb-6">
-        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Selecionar períodos</h3>
+      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
+        <h3 className="text-sm font-semibold text-zinc-300 mb-4">Selecionar períodos</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Período anterior</p>
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Período anterior</p>
             <div className="grid grid-cols-2 gap-3">
               <select value={mesAnterior} onChange={(e) => setMesAnterior(Number(e.target.value))} className={inputCls}>
                 {MESES.map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
@@ -315,7 +315,7 @@ function TabComparativo() {
             </div>
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Período atual</p>
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Período atual</p>
             <div className="grid grid-cols-2 gap-3">
               <select value={mesAtual} onChange={(e) => setMesAtual(Number(e.target.value))} className={inputCls}>
                 {MESES.map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
@@ -335,31 +335,31 @@ function TabComparativo() {
       {error && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-4">{error}</div>}
 
       {dados && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800">
-                <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wide px-6 py-4">Indicador</th>
-                <th className="text-right text-xs font-medium text-slate-400 uppercase tracking-wide px-6 py-4">{mesLabelA}</th>
-                <th className="text-right text-xs font-medium text-slate-400 uppercase tracking-wide px-6 py-4">{mesLabelB}</th>
-                <th className="text-right text-xs font-medium text-slate-400 uppercase tracking-wide px-6 py-4">Variação</th>
+              <tr className="border-b border-zinc-800 bg-slate-50 dark:bg-zinc-800">
+                <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">Indicador</th>
+                <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">{mesLabelA}</th>
+                <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">{mesLabelB}</th>
+                <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">Variação</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
-              <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                <td className="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">Receitas</td>
-                <td className="px-6 py-4 text-sm text-right text-slate-600 dark:text-slate-400">{fmt(dados.anterior?.totalReceitas)}</td>
-                <td className="px-6 py-4 text-sm text-right text-slate-600 dark:text-slate-400">{fmt(dados.atual?.totalReceitas)}</td>
+            <tbody className="divide-y divide-zinc-800">
+              <tr className="hover:bg-zinc-800/40">
+                <td className="px-6 py-4 text-sm font-medium text-zinc-300">Receitas</td>
+                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.anterior?.totalReceitas)}</td>
+                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.atual?.totalReceitas)}</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoReceitas)}`}>{variationLabel(dados.variacaoReceitas)}</td>
               </tr>
-              <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                <td className="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">Despesas</td>
-                <td className="px-6 py-4 text-sm text-right text-slate-600 dark:text-slate-400">{fmt(dados.anterior?.totalDespesas)}</td>
-                <td className="px-6 py-4 text-sm text-right text-slate-600 dark:text-slate-400">{fmt(dados.atual?.totalDespesas)}</td>
+              <tr className="hover:bg-zinc-800/40">
+                <td className="px-6 py-4 text-sm font-medium text-zinc-300">Despesas</td>
+                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.anterior?.totalDespesas)}</td>
+                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.atual?.totalDespesas)}</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoDespesas, true)}`}>{variationLabel(dados.variacaoDespesas)}</td>
               </tr>
-              <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 bg-slate-50/30 dark:bg-slate-800/30">
-                <td className="px-6 py-4 text-sm font-semibold text-slate-800 dark:text-slate-200">Saldo</td>
+              <tr className="hover:bg-zinc-800/40 bg-slate-50/30 dark:bg-zinc-800/30">
+                <td className="px-6 py-4 text-sm font-semibold text-zinc-200">Saldo</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${(dados.anterior?.saldo ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(dados.anterior?.saldo)}</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${(dados.atual?.saldo ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(dados.atual?.saldo)}</td>
                 <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoSaldo)}`}>{variationLabel(dados.variacaoSaldo)}</td>
@@ -385,16 +385,16 @@ export default function Relatorios() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Relatórios</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Análise detalhada das suas finanças</p>
+          <h1 className="font-display text-xl font-semibold text-white">Relatórios</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">Análise detalhada das suas finanças</p>
         </div>
       </div>
 
-      <div className="flex bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 gap-1 shadow-sm mb-6 w-fit">
+      <div className="flex bg-zinc-800 border border-zinc-700 rounded-xl p-1 gap-1 shadow-sm mb-6 w-fit">
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t.id ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+              tab === t.id ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}>
             {t.label}
           </button>

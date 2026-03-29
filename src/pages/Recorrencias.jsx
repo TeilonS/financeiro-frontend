@@ -20,7 +20,7 @@ const EMPTY_FORM = {
   diaReferencia: '1', dataInicio: '', dataFim: '', categoriaId: '',
 }
 
-const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
+const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Recorrencias() {
   const now = new Date()
@@ -94,15 +94,15 @@ export default function Recorrencias() {
 
   function freqBadge(f) {
     const map = { MENSAL: 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400', SEMANAL: 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400', ANUAL: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' }
-    return map[f] || 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+    return map[f] || 'bg-slate-50 dark:bg-zinc-800 text-zinc-400'
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Recorrências</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Lançamentos automáticos recorrentes</p>
+          <h1 className="font-display text-xl font-semibold text-white">Recorrências</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">Lançamentos automáticos recorrentes</p>
         </div>
         <button onClick={openNew}
           className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
@@ -117,16 +117,16 @@ export default function Recorrencias() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-5 mb-6">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Gerar lançamentos</h2>
+      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-5 mb-6">
+        <h2 className="text-sm font-semibold text-zinc-300 mb-4">Gerar lançamentos</h2>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1.5">
+          <div className="flex items-center gap-1 bg-slate-50 dark:bg-zinc-800 border border-zinc-700 rounded-xl px-2 py-1.5">
             <button onClick={prevMes} className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors">
-              <ChevronLeft size={16} className="text-slate-500 dark:text-slate-400" />
+              <ChevronLeft size={16} className="text-zinc-500" />
             </button>
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-300 min-w-[120px] text-center">{mesLabel}</span>
+            <span className="text-sm font-medium text-zinc-300 min-w-[120px] text-center">{mesLabel}</span>
             <button onClick={nextMes} className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors">
-              <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
+              <ChevronRight size={16} className="text-zinc-500" />
             </button>
           </div>
           <button onClick={handleGerar} disabled={gerarLoading}
@@ -152,19 +152,19 @@ export default function Recorrencias() {
           <Loader2 size={28} className="animate-spin text-primary-500" />
         </div>
       ) : recorrencias.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-16 text-center">
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-16 text-center">
           <RefreshCw size={36} className="text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-500 dark:text-slate-400 font-medium">Nenhuma recorrência cadastrada</p>
-          <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Crie recorrências para gerar lançamentos automaticamente.</p>
+          <p className="text-zinc-500 font-medium">Nenhuma recorrência cadastrada</p>
+          <p className="text-zinc-500 text-sm mt-1">Crie recorrências para gerar lançamentos automaticamente.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {recorrencias.map(r => (
-            <div key={r.id} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-5">
+            <div key={r.id} className="bg-zinc-900 rounded-xl border border-zinc-800 p-5">
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{r.descricao}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{r.categoriaNome || r.categoria?.nome || 'Sem categoria'}</p>
+                  <p className="text-sm font-semibold text-zinc-200 truncate">{r.descricao}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{r.categoriaNome || r.categoria?.nome || 'Sem categoria'}</p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   {r.ativa ? (
@@ -183,7 +183,7 @@ export default function Recorrencias() {
                   {FREQUENCIAS.find(f => f.value === r.frequencia)?.label || r.frequencia}
                 </span>
                 {!r.ativa && (
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 bg-zinc-700 text-zinc-500">
                     Inativa
                   </span>
                 )}
@@ -194,7 +194,7 @@ export default function Recorrencias() {
                   <p className={`text-lg font-semibold ${r.tipo === 'RECEITA' ? 'text-emerald-600' : 'text-red-500'}`}>
                     {fmt(r.valor)}
                   </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">
+                  <p className="text-xs text-zinc-500">
                     {r.frequencia === 'MENSAL' ? `Dia ${r.diaReferencia} de cada mês` :
                      r.frequencia === 'SEMANAL' ? `Toda semana (dia ${r.diaReferencia})` :
                      `Dia ${r.diaReferencia} do ano`}
@@ -208,7 +208,7 @@ export default function Recorrencias() {
                         <button onClick={() => handleDesativar(r.id)}
                           className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg transition-colors">Sim</button>
                         <button onClick={() => setDesativandoId(null)}
-                          className="text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-2 py-1 rounded-lg transition-colors">Não</button>
+                          className="text-xs text-slate-600 text-zinc-300 bg-slate-100 bg-zinc-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-2 py-1 rounded-lg transition-colors">Não</button>
                       </div>
                     ) : (
                       <button onClick={() => setDesativandoId(r.id)}
@@ -222,7 +222,7 @@ export default function Recorrencias() {
               </div>
 
               {(r.dataInicio || r.dataFim) && (
-                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 dark:text-slate-500 flex gap-3">
+                <div className="mt-3 pt-3 border-t border-zinc-800 text-xs text-zinc-500 flex gap-3">
                   {r.dataInicio && <span>Início: {new Date(r.dataInicio + 'T12:00:00').toLocaleDateString('pt-BR')}</span>}
                   {r.dataFim && <span>Fim: {new Date(r.dataFim + 'T12:00:00').toLocaleDateString('pt-BR')}</span>}
                 </div>
@@ -235,16 +235,16 @@ export default function Recorrencias() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Nova recorrência" maxWidth="max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Descrição</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Descrição</label>
             <input type="text" required value={form.descricao} onChange={set('descricao')} placeholder="Ex: Aluguel, Academia..." className={inputCls} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Valor (R$)</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Valor (R$)</label>
               <input type="number" required min="0.01" step="0.01" value={form.valor} onChange={set('valor')} placeholder="0,00" className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Tipo</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Tipo</label>
               <select value={form.tipo} onChange={set('tipo')} className={inputCls}>
                 <option value="DESPESA">Despesa</option>
                 <option value="RECEITA">Receita</option>
@@ -253,28 +253,28 @@ export default function Recorrencias() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Frequência</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Frequência</label>
               <select value={form.frequencia} onChange={set('frequencia')} className={inputCls}>
                 {FREQUENCIAS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Dia referência (1–28)</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Dia referência (1–28)</label>
               <input type="number" required min="1" max="28" value={form.diaReferencia} onChange={set('diaReferencia')} className={inputCls} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Data início</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Data início</label>
               <input type="date" required value={form.dataInicio} onChange={set('dataInicio')} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Data fim (opcional)</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Data fim (opcional)</label>
               <input type="date" value={form.dataFim} onChange={set('dataFim')} className={inputCls} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Categoria</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Categoria</label>
             <select value={form.categoriaId} onChange={set('categoriaId')} className={inputCls}>
               <option value="">Sem categoria</option>
               {catsFiltradas.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
@@ -289,7 +289,7 @@ export default function Recorrencias() {
 
           <div className="flex gap-3 pt-1">
             <button type="button" onClick={() => setModalOpen(false)}
-              className="flex-1 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-sm font-medium transition-colors">
+              className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300 py-2.5 rounded-xl text-sm font-medium transition-colors">
               Cancelar
             </button>
             <button type="submit" disabled={formLoading}

@@ -9,7 +9,7 @@ const CORES = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4',
 
 const EMPTY = { nome: '', limite: '', faturaAtual: '', diaVencimento: '', cor: '#6366f1' }
 
-const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
+const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Cartoes() {
   const [cartoes, setCartoes] = useState([])
@@ -65,8 +65,8 @@ export default function Cartoes() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Cartões de Crédito</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Acompanhe faturas e limites</p>
+          <h1 className="font-display text-xl font-semibold text-white">Cartões de Crédito</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">Acompanhe faturas e limites</p>
         </div>
         <button onClick={openNew} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
           <Plus size={16} /> Novo cartão
@@ -81,12 +81,12 @@ export default function Cartoes() {
 
       {cartoes.length > 0 && (
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Total de Faturas</p>
+          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-5">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Total de Faturas</p>
             <p className="text-2xl font-bold text-red-500">{fmt(totalFaturas)}</p>
           </div>
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Limite Total Disponível</p>
+          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-5">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Limite Total Disponível</p>
             <p className="text-2xl font-bold text-emerald-600">{fmt(totalLimite - totalFaturas)}</p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function Cartoes() {
       {loading ? (
         <div className="flex items-center justify-center h-48"><Loader2 size={28} className="animate-spin text-primary-500" /></div>
       ) : cartoes.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center py-16 text-slate-400 dark:text-slate-500">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm text-center py-16 text-zinc-500">
           <CreditCard size={40} className="mx-auto mb-3 opacity-30" />
           <p className="font-medium">Nenhum cartão cadastrado</p>
           <p className="text-sm mt-1">Adicione um cartão para acompanhar suas faturas.</p>
@@ -111,15 +111,15 @@ export default function Cartoes() {
               return Math.ceil((venc - hoje) / 86400000)
             })()
             return (
-              <div key={c.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
+              <div key={c.id} className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: c.cor + '20' }}>
                       <CreditCard size={20} style={{ color: c.cor }} />
                     </div>
                     <div>
-                      <p className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{c.nome}</p>
-                      <p className="text-xs text-slate-400 dark:text-slate-500">
+                      <p className="font-semibold text-zinc-200 text-sm">{c.nome}</p>
+                      <p className="text-xs text-zinc-500">
                         Vence dia {c.diaVencimento} · {venceEm <= 3 ? <span className="text-red-500 font-medium">{venceEm}d</span> : `${venceEm}d`}
                       </p>
                     </div>
@@ -128,11 +128,11 @@ export default function Cartoes() {
                     {deletandoId === c.id ? (
                       <div className="flex items-center gap-1">
                         <button onClick={() => handleDelete(c.id)} className="text-xs text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg">Sim</button>
-                        <button onClick={() => setDeletandoId(null)} className="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-lg">Não</button>
+                        <button onClick={() => setDeletandoId(null)} className="text-xs bg-slate-100 bg-zinc-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-zinc-300 px-2 py-1 rounded-lg">Não</button>
                       </div>
                     ) : (
                       <>
-                        <button onClick={() => openEdit(c)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"><Pencil size={14} /></button>
+                        <button onClick={() => openEdit(c)} className="p-1.5 hover:bg-zinc-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"><Pencil size={14} /></button>
                         <button onClick={() => setDeletandoId(c.id)} className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500"><Trash2 size={14} /></button>
                       </>
                     )}
@@ -140,18 +140,18 @@ export default function Cartoes() {
                 </div>
 
                 <div className="mb-3">
-                  <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5">
-                    <span>Fatura: <strong className="text-slate-800 dark:text-slate-200">{fmt(c.faturaAtual)}</strong></span>
+                  <div className="flex justify-between text-xs text-zinc-500 mb-1.5">
+                    <span>Fatura: <strong className="text-zinc-200">{fmt(c.faturaAtual)}</strong></span>
                     <span>Limite: {fmt(c.limite)}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 bg-zinc-700 rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: pct > 80 ? '#ef4444' : pct > 60 ? '#f59e0b' : c.cor }} />
                   </div>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 text-right">{pct.toFixed(0)}% utilizado</p>
+                  <p className="text-xs text-zinc-500 mt-1 text-right">{pct.toFixed(0)}% utilizado</p>
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 dark:text-slate-400">Disponível</span>
+                  <span className="text-zinc-500">Disponível</span>
                   <span className="font-semibold text-emerald-600">{fmt(c.limiteDisponivel)}</span>
                 </div>
               </div>
@@ -163,25 +163,25 @@ export default function Cartoes() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editando ? 'Editar cartão' : 'Novo cartão'} maxWidth="max-w-md">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nome do cartão</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Nome do cartão</label>
             <input type="text" required value={form.nome} onChange={set('nome')} placeholder="Ex: Nubank, Itaú Platinum..." className={inputCls} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Limite (R$)</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Limite (R$)</label>
               <input type="number" required min="0" step="0.01" value={form.limite} onChange={set('limite')} placeholder="0,00" className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Fatura atual (R$)</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Fatura atual (R$)</label>
               <input type="number" min="0" step="0.01" value={form.faturaAtual} onChange={set('faturaAtual')} placeholder="0,00" className={inputCls} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Dia do vencimento</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Dia do vencimento</label>
             <input type="number" required min="1" max="31" value={form.diaVencimento} onChange={set('diaVencimento')} placeholder="Ex: 10" className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Cor</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-2">Cor</label>
             <div className="flex gap-2 flex-wrap">
               {CORES.map(cor => (
                 <button key={cor} type="button" onClick={() => setForm(f => ({ ...f, cor }))}
@@ -192,7 +192,7 @@ export default function Cartoes() {
           </div>
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl">{formError}</div>}
           <div className="flex gap-3 pt-1">
-            <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-sm font-medium transition-colors">Cancelar</button>
+            <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300 py-2.5 rounded-xl text-sm font-medium transition-colors">Cancelar</button>
             <button type="submit" disabled={formLoading} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
               {formLoading && <Loader2 size={14} className="animate-spin" />}
               {editando ? 'Salvar' : 'Criar cartão'}

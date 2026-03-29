@@ -47,8 +47,8 @@ export default function Backup() {
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Backup</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Exporte ou restaure todos os seus dados</p>
+        <h1 className="font-display text-xl font-semibold text-white">Backup</h1>
+        <p className="text-zinc-500 text-sm mt-0.5">Exporte ou restaure todos os seus dados</p>
       </div>
 
       {success && (
@@ -67,14 +67,14 @@ export default function Backup() {
 
       <div className="space-y-4">
         {/* Exportar */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-6">
           <div className="flex items-start gap-4">
             <div className="w-11 h-11 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center shrink-0">
               <Download size={20} className="text-primary-600 dark:text-primary-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Exportar dados</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              <h2 className="text-sm font-semibold text-zinc-200 mb-1">Exportar dados</h2>
+              <p className="text-xs text-zinc-500 mb-4">
                 Baixa um arquivo JSON com todos os seus dados: categorias, lançamentos, metas, orçamentos, cartões e recorrências.
               </p>
               <button onClick={handleExportar} disabled={exportLoading}
@@ -87,14 +87,14 @@ export default function Backup() {
         </div>
 
         {/* Importar */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-6">
           <div className="flex items-start gap-4">
             <div className="w-11 h-11 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center shrink-0">
               <Upload size={20} className="text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Importar dados</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">
+              <h2 className="text-sm font-semibold text-zinc-200 mb-1">Importar dados</h2>
+              <p className="text-xs text-zinc-500 mb-1">
                 Restaura dados a partir de um arquivo de backup JSON exportado anteriormente.
               </p>
               <p className="text-xs text-amber-600 dark:text-amber-400 font-medium mb-4">
@@ -111,12 +111,12 @@ export default function Backup() {
         </div>
 
         {/* Info */}
-        <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5">
+        <div className="bg-slate-50 dark:bg-zinc-800 rounded-2xl border border-zinc-800 p-5">
           <div className="flex items-center gap-2 mb-3">
-            <HardDrive size={16} className="text-slate-500 dark:text-slate-400" />
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">O que é incluído no backup</span>
+            <HardDrive size={16} className="text-zinc-500" />
+            <span className="text-sm font-medium text-zinc-300">O que é incluído no backup</span>
           </div>
-          <ul className="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+          <ul className="space-y-1.5 text-xs text-zinc-500">
             {['Categorias e subcategorias', 'Todos os lançamentos', 'Metas de gastos', 'Orçamentos mensais', 'Cartões de crédito', 'Recorrências'].map(item => (
               <li key={item} className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0" />

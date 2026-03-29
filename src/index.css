@@ -3,14 +3,40 @@
 @tailwind utilities;
 
 * { box-sizing: border-box; }
-body { margin: 0; font-family: 'Inter', system-ui, sans-serif; }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #5eead4; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #14b8a6; }
+body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-.dark ::-webkit-scrollbar-track { background: #0f172a; }
-.dark ::-webkit-scrollbar-thumb { background: #0f766e; }
-.dark ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
+/* Números financeiros sempre em tabular figures — evita "dança" de layout */
+.font-mono,
+[class*="tabular"] {
+  font-feature-settings: "tnum" 1, "zero" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbar minimalista, quase invisível */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #3F3F46; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #B45309; }
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb { background: #3F3F46; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #FBBF24; }
+
+/* Remove outline padrão feio, substituir por focus ring elegante */
+:focus-visible {
+  outline: 2px solid #FBBF24;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Seleção de texto com cor da marca */
+::selection {
+  background: rgba(251, 191, 36, 0.2);
+  color: inherit;
+}

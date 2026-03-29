@@ -118,8 +118,8 @@ export default function Extrato() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Importar Extrato</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Importe seu extrato bancário para classificar transações</p>
+          <h1 className="font-display text-xl font-semibold text-white">Importar Extrato</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">Importe seu extrato bancário para classificar transações</p>
         </div>
       </div>
 
@@ -130,8 +130,8 @@ export default function Extrato() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 mb-6">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Novo arquivo</h2>
+      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
+        <h2 className="text-sm font-semibold text-zinc-300 mb-4">Novo arquivo</h2>
 
         <div className="flex gap-2 mb-5">
           {FORMATOS.map(f => (
@@ -139,7 +139,7 @@ export default function Extrato() {
               className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
                 formato === f.value
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  : 'border-zinc-700 text-slate-600 text-zinc-300 hover:bg-zinc-800'
               }`}>
               {f.label}
             </button>
@@ -154,13 +154,13 @@ export default function Extrato() {
           className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${
             dragging
               ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20'
-              : 'border-slate-200 dark:border-slate-700 hover:border-primary-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+              : 'border-zinc-700 hover:border-primary-300 hover:bg-zinc-800'
           }`}
         >
           {uploadLoading ? (
             <div className="flex flex-col items-center gap-3">
               <Loader2 size={32} className="animate-spin text-primary-500" />
-              <p className="text-sm text-slate-500 dark:text-slate-400">Processando arquivo...</p>
+              <p className="text-sm text-zinc-500">Processando arquivo...</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
@@ -168,8 +168,8 @@ export default function Extrato() {
                 <FileUp size={22} className="text-primary-500" />
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Arraste ou clique para selecionar</p>
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Formato selecionado: <strong>{FORMATOS.find(f => f.value === formato)?.label}</strong></p>
+                <p className="text-sm font-medium text-zinc-300">Arraste ou clique para selecionar</p>
+                <p className="text-xs text-zinc-500 mt-1">Formato selecionado: <strong>{FORMATOS.find(f => f.value === formato)?.label}</strong></p>
               </div>
               <button type="button"
                 className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
@@ -189,8 +189,8 @@ export default function Extrato() {
 
         {uploadResult && (
           <div className="mt-5 space-y-3">
-            <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm flex flex-wrap gap-4">
-              <span className="text-slate-600 dark:text-slate-300">
+            <div className="bg-slate-50 dark:bg-zinc-800 border border-zinc-800 rounded-xl px-4 py-3 text-sm flex flex-wrap gap-4">
+              <span className="text-slate-600 text-zinc-300">
                 <strong className="text-slate-800 dark:text-white">{uploadResult.totalTransacoes}</strong> transações importadas
               </span>
               {uploadResult.autoConfirmadas > 0 && (
@@ -227,7 +227,7 @@ export default function Extrato() {
           <span className="text-sm font-medium text-primary-700 dark:text-primary-400">{selecionados.length} selecionada(s)</span>
           <select
             value={loteCategoria} onChange={e => setLoteCategoria(e.target.value)}
-            className="flex-1 min-w-[180px] px-3 py-1.5 border border-primary-200 dark:border-primary-700 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            className="flex-1 min-w-[180px] px-3 py-1.5 border border-primary-200 dark:border-primary-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500">
             <option value="">Selecionar categoria...</option>
             {categorias.map(c => <option key={c.id} value={c.id}>{c.nome} ({c.tipo})</option>)}
           </select>
@@ -240,14 +240,14 @@ export default function Extrato() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Pendentes anteriores</h2>
+      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
+        <h2 className="text-sm font-semibold text-zinc-300 mb-4">Pendentes anteriores</h2>
         {pendentesLoading ? (
           <div className="flex items-center justify-center h-24">
             <Loader2 size={24} className="animate-spin text-primary-500" />
           </div>
         ) : pendentesExist.length === 0 ? (
-          <p className="text-slate-400 dark:text-slate-500 text-sm text-center py-8">Nenhuma transação pendente.</p>
+          <p className="text-zinc-500 text-sm text-center py-8">Nenhuma transação pendente.</p>
         ) : (
           <PendentesList
             items={pendentesExist} categorias={categorias}
@@ -260,10 +260,10 @@ export default function Extrato() {
       <Modal open={!!confirmModal} onClose={() => setConfirmModal(null)} title="Confirmar transação" maxWidth="max-w-md">
         {confirmModal && (
           <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-sm">
-              <p className="font-medium text-slate-800 dark:text-slate-200">{confirmModal.descricao}</p>
+            <div className="bg-slate-50 dark:bg-zinc-800 rounded-xl p-4 text-sm">
+              <p className="font-medium text-zinc-200">{confirmModal.descricao}</p>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-slate-500 dark:text-slate-400">{formatDate(confirmModal.data)}</span>
+                <span className="text-zinc-500">{formatDate(confirmModal.data)}</span>
                 <span className={`font-semibold ${confirmModal.tipo === 'RECEITA' ? 'text-emerald-600' : 'text-red-500'}`}>
                   {fmt(confirmModal.valor)}
                 </span>
@@ -271,10 +271,10 @@ export default function Extrato() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Categoria</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Categoria</label>
               <select
                 value={confirmCatId} onChange={(e) => setConfirmCatId(e.target.value)}
-                className="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                className="w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500">
                 <option value="">Sem categoria</option>
                 {categorias
                   .filter(c => !confirmModal.tipo || c.tipo === confirmModal.tipo)
@@ -284,7 +284,7 @@ export default function Extrato() {
 
             <div className="flex gap-3">
               <button onClick={() => setConfirmModal(null)}
-                className="flex-1 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-sm font-medium transition-colors">
+                className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300 py-2.5 rounded-xl text-sm font-medium transition-colors">
                 Cancelar
               </button>
               <button onClick={handleConfirmar} disabled={confirmLoading}
@@ -302,7 +302,7 @@ export default function Extrato() {
 
 function PendentesList({ items, categorias, onConfirmar, onIgnorar, selecionados = [], onToggle }) {
   return (
-    <div className="divide-y divide-slate-50 dark:divide-slate-800">
+    <div className="divide-y divide-zinc-800">
       {items.map(item => (
         <div key={item.id} className="flex items-center justify-between py-3 gap-3">
           {onToggle && (
@@ -312,8 +312,8 @@ function PendentesList({ items, categorias, onConfirmar, onIgnorar, selecionados
           <div className="flex items-center gap-3 min-w-0">
             <div className={`w-2 h-2 rounded-full shrink-0 ${item.tipo === 'RECEITA' ? 'bg-emerald-400' : 'bg-red-400'}`} />
             <div className="min-w-0">
-              <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{item.descricao}</p>
-              <p className="text-xs text-slate-400 dark:text-slate-500">
+              <p className="text-sm font-medium text-zinc-200 truncate">{item.descricao}</p>
+              <p className="text-xs text-zinc-500">
                 {formatDate(item.data)}
                 {item.categoriaSugeridaNome && (
                   <span className="ml-2 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-1.5 py-0.5 rounded font-medium">

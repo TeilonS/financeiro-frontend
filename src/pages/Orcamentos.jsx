@@ -7,7 +7,7 @@ import * as catApi from '../api/categorias'
 const fmt = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v ?? 0)
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
-const inputCls = 'w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl text-sm bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500'
+const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Orcamentos() {
   const now = new Date()
@@ -59,17 +59,17 @@ export default function Orcamentos() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Orçamentos</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Defina limites de gasto por categoria</p>
+          <h1 className="font-display text-xl font-semibold text-white">Orçamentos</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">Defina limites de gasto por categoria</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1.5 shadow-sm">
-            <button onClick={prevMes} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
-              <ChevronLeft size={16} className="text-slate-500 dark:text-slate-400" />
+          <div className="flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
+            <button onClick={prevMes} className="p-1 hover:bg-zinc-700 rounded-lg">
+              <ChevronLeft size={16} className="text-zinc-500" />
             </button>
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-300 min-w-[120px] text-center">{mesLabel}</span>
-            <button onClick={nextMes} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
-              <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
+            <span className="text-sm font-medium text-zinc-300 min-w-[120px] text-center">{mesLabel}</span>
+            <button onClick={nextMes} className="p-1 hover:bg-zinc-700 rounded-lg">
+              <ChevronRight size={16} className="text-zinc-500" />
             </button>
           </div>
           <button onClick={() => { setForm({ categoriaId: '', valorLimite: '' }); setFormError(''); setModalOpen(true) }}
@@ -88,7 +88,7 @@ export default function Orcamentos() {
       {loading ? (
         <div className="flex items-center justify-center h-48"><Loader2 size={28} className="animate-spin text-primary-500" /></div>
       ) : orcamentos.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center py-16 text-slate-400 dark:text-slate-500">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm text-center py-16 text-zinc-500">
           <PiggyBank size={40} className="mx-auto mb-3 opacity-30" />
           <p className="font-medium">Nenhum orçamento definido para este mês</p>
           <p className="text-sm mt-1">Crie limites por categoria para controlar seus gastos.</p>
@@ -96,28 +96,28 @@ export default function Orcamentos() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {orcamentos.map(o => (
-            <div key={o.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
+            <div key={o.id} className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-5">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200">{o.categoriaNome}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{o.categoriaTipo === 'DESPESA' ? 'Despesa' : 'Receita'}</p>
+                  <p className="font-semibold text-zinc-200">{o.categoriaNome}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{o.categoriaTipo === 'DESPESA' ? 'Despesa' : 'Receita'}</p>
                 </div>
                 <button onClick={() => handleDelete(o.id)} className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 dark:text-slate-600 hover:text-red-500 transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>
               <div className="mb-2">
-                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5">
-                  <span>Gasto: <strong className={o.percentualUsado >= 100 ? 'text-red-600' : 'text-slate-700 dark:text-slate-300'}>{fmt(o.valorGasto)}</strong></span>
+                <div className="flex justify-between text-xs text-zinc-500 mb-1.5">
+                  <span>Gasto: <strong className={o.percentualUsado >= 100 ? 'text-red-600' : 'text-zinc-300'}>{fmt(o.valorGasto)}</strong></span>
                   <span>Limite: {fmt(o.valorLimite)}</span>
                 </div>
-                <div className="h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-2.5 bg-slate-100 bg-zinc-700 rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all"
                     style={{ width: `${o.percentualUsado}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#14b8a6' }} />
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-slate-400 dark:text-slate-500">{o.percentualUsado}% utilizado</span>
+                <span className="text-xs text-zinc-500">{o.percentualUsado}% utilizado</span>
                 <span className={`text-sm font-semibold ${o.percentualUsado >= 100 ? 'text-red-500' : 'text-emerald-600'}`}>
                   {o.percentualUsado >= 100 ? `−${fmt(o.valorGasto - o.valorLimite)} acima` : `${fmt(o.valorLimite - o.valorGasto)} restante`}
                 </span>
@@ -130,7 +130,7 @@ export default function Orcamentos() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Novo orçamento" maxWidth="max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Categoria</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Categoria</label>
             <select required value={form.categoriaId} onChange={e => setForm(f => ({...f, categoriaId: e.target.value}))}
               className={inputCls}>
               <option value="">Selecionar...</option>
@@ -138,14 +138,14 @@ export default function Orcamentos() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Limite (R$)</label>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Limite (R$)</label>
             <input type="number" required min="0.01" step="0.01" value={form.valorLimite}
               onChange={e => setForm(f => ({...f, valorLimite: e.target.value}))} placeholder="0,00"
               className={inputCls} />
           </div>
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl">{formError}</div>}
           <div className="flex gap-3 pt-1">
-            <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-sm font-medium">Cancelar</button>
+            <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300 py-2.5 rounded-xl text-sm font-medium">Cancelar</button>
             <button type="submit" disabled={formLoading} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
               {formLoading && <Loader2 size={14} className="animate-spin" />} Criar
             </button>
