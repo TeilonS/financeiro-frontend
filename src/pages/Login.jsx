@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import * as authApi from '../api/auth'
@@ -14,11 +14,24 @@ export default function Login() {
   const [form, setForm] = useState({ nome: '', email: '', senha: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [serverWaking, setServerWaking] = useState(false)
+  const wakingTimer = useRef(null)
 
-  // Pré-aquece o backend (Render dorme após inatividade — cold start pode demorar 30-60s)
+  // Pré-aquece o backend (Render dorme após inatividade)
   useEffect(() => {
     api.get('/auth/ping').catch(() => {})
   }, [])
+
+  // Mostra aviso de "iniciando servidor" se o login demorar mais de 3s
+  useEffect(() => {
+    if (loading) {
+      wakingTimer.current = setTimeout(() => setServerWaking(true), 3000)
+    } else {
+      clearTimeout(wakingTimer.current)
+      setServerWaking(false)
+    }
+    return () => clearTimeout(wakingTimer.current)
+  }, [loading])
 
   if (user) return <Navigate to="/" replace />
 
@@ -135,8 +148,16 @@ export default function Login() {
             <button type="submit" disabled={loading}
               className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2.5 rounded-xl font-semibold text-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2">
               {loading && <Loader2 size={14} className="animate-spin" />}
-              {mode === 'login' ? 'Entrar' : 'Criar conta'}
+              {loading
+                ? (serverWaking ? 'Iniciando servidor...' : 'Entrando...')
+                : (mode === 'login' ? 'Entrar' : 'Criar conta')
+              }
             </button>
+            {serverWaking && (
+              <p className="text-center text-zinc-500 text-xs mt-2">
+                O servidor estava inativo. Aguarde alguns segundos.
+              </p>
+            )}
           </form>
 
           <p className="text-center text-zinc-600 text-xs mt-6">
