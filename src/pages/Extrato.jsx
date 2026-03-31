@@ -36,7 +36,7 @@ export default function Extrato() {
       setPendentesExist(resPend.data || [])
       setCategorias(resCats.data || [])
     } catch {
-      // silent
+      setError('Erro ao carregar transações pendentes. Tente recarregar a página.')
     } finally {
       setPendentesLoading(false)
     }

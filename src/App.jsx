@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
@@ -18,7 +18,7 @@ const Orcamentos   = lazy(() => import('./pages/Orcamentos'))
 const Backup       = lazy(() => import('./pages/Backup'))
 
 function PrivateRoute({ children }) {
-  const token = localStorage.getItem('token')
+  const { token } = useAuth()
   return token ? children : <Navigate to="/login" replace />
 }
 

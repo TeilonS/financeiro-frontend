@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import toast from 'react-hot-toast'
 import {
   BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -97,7 +98,7 @@ export default function Dashboard() {
       const res = await usuarioApi.atualizarReserva(val)
       setReserva(res.data?.valor ?? val)
       setEditandoReserva(false)
-    } catch { /* silent */ }
+    } catch { toast.error('Erro ao salvar reserva de emergência.') }
   }
 
   const mesLabel = `${MESES[mes - 1]} ${ano}`

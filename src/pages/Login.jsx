@@ -7,14 +7,14 @@ import { Loader2 } from 'lucide-react'
 const inputCls = 'w-full px-4 py-2.5 rounded-xl text-sm bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/40 focus:border-primary-500/40 transition-colors'
 
 export default function Login() {
-  const { login } = useAuth()
+  const { login, token } = useAuth()
   const navigate = useNavigate()
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ nome: '', email: '', senha: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (localStorage.getItem('token')) return <Navigate to="/" replace />
+  if (token) return <Navigate to="/" replace />
 
   const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
 
