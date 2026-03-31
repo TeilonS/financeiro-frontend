@@ -18,8 +18,8 @@ const Orcamentos   = lazy(() => import('./pages/Orcamentos'))
 const Backup       = lazy(() => import('./pages/Backup'))
 
 function PrivateRoute({ children }) {
-  const { token } = useAuth()
-  return token ? children : <Navigate to="/login" replace />
+  const { user } = useAuth()
+  return user ? children : <Navigate to="/login" replace />
 }
 
 function PageLoader() {

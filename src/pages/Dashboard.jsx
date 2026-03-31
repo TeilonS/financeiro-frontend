@@ -60,33 +60,40 @@ export default function Dashboard() {
     async function load() {
       setLoading(true)
       setError('')
+      const params = { mes, ano }
+
+      // Wave 1: dados críticos — libera o loading assim que chegarem
       try {
-        const params = { mes, ano }
-        const [resResumo, resEvolucao, resCats, resLanc, resReserva, resPatrimonio, resPrev, resOrc] = await Promise.all([
+        const [resResumo, resLanc] = await Promise.all([
           resumo(params),
-          evolucao(ano),
-          topCategorias({ ...params, tipo: 'DESPESA', limit: 6 }),
           listar({ ...params, size: 5, sort: 'data,desc' }),
-          usuarioApi.getReserva(),
-          usuarioApi.patrimonio(),
-          fetchPrevisao(mes, ano),
-          orcamentosApi.listar(mes, ano),
         ])
         setDadosResumo(resResumo.data)
-        const meses = resEvolucao.data?.meses || []
-        setDadosEvolucao(meses.map(item => ({ ...item, nomeMes: (item.nomeMes || '').substring(0, 3) })))
-        setDadosCategorias(resCats.data || [])
         const lancArr = Array.isArray(resLanc.data) ? resLanc.data : resLanc.data?.content || []
         setRecentesLancamentos(lancArr.slice(0, 5))
-        setReserva(resReserva.data?.valor ?? 0)
-        setPatrimonio(resPatrimonio.data)
-        setPrevisao(resPrev.data)
-        setOrcamentos(resOrc.data || [])
       } catch {
         setError('Erro ao carregar dados do dashboard.')
       } finally {
         setLoading(false)
       }
+
+      // Wave 2: gráficos e widgets secundários — não bloqueiam a UI
+      Promise.all([
+        evolucao(ano),
+        topCategorias({ ...params, tipo: 'DESPESA', limit: 6 }),
+        usuarioApi.getReserva(),
+        usuarioApi.patrimonio(),
+        fetchPrevisao(mes, ano),
+        orcamentosApi.listar(mes, ano),
+      ]).then(([resEvolucao, resCats, resReserva, resPatrimonio, resPrev, resOrc]) => {
+        const meses = resEvolucao.data?.meses || []
+        setDadosEvolucao(meses.map(item => ({ ...item, nomeMes: (item.nomeMes || '').substring(0, 3) })))
+        setDadosCategorias(resCats.data || [])
+        setReserva(resReserva.data?.valor ?? 0)
+        setPatrimonio(resPatrimonio.data)
+        setPrevisao(resPrev.data)
+        setOrcamentos(resOrc.data || [])
+      }).catch(() => {})
     }
     load()
   }, [mes, ano])

@@ -1,20 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import * as authApi from '../api/auth'
+import api from '../api'
 import { Loader2 } from 'lucide-react'
 
 const inputCls = 'w-full px-4 py-2.5 rounded-xl text-sm bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/40 focus:border-primary-500/40 transition-colors'
 
 export default function Login() {
-  const { login, token } = useAuth()
+  const { login, user } = useAuth()
   const navigate = useNavigate()
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ nome: '', email: '', senha: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (token) return <Navigate to="/" replace />
+  // Pré-aquece o backend (Render dorme após inatividade — cold start pode demorar 30-60s)
+  useEffect(() => {
+    api.get('/auth/ping').catch(() => {})
+  }, [])
+
+  if (user) return <Navigate to="/" replace />
 
   const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
 
@@ -27,7 +33,7 @@ export default function Login() {
       } else {
         res = await authApi.register(form.nome, form.email, form.senha)
       }
-      login(res.data.token, { nome: res.data.nome, email: res.data.email })
+      login({ nome: res.data.nome, email: res.data.email })
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.mensagem || 'Credenciais inválidas.')

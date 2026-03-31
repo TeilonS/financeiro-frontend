@@ -1,32 +1,31 @@
 import { createContext, useContext, useState } from 'react'
+import api from '../api'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user')) } catch { return null }
   })
 
-  function login(token, userData) {
-    localStorage.setItem('token', token)
+  function login(userData) {
     localStorage.setItem('user', JSON.stringify(userData))
-    setToken(token)
     setUser(userData)
   }
 
-  function logout() {
-    localStorage.removeItem('token')
+  async function logout() {
+    try { await api.post('/auth/logout') } catch { /* ignora falha de rede */ }
     localStorage.removeItem('user')
-    setToken(null)
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export function useAuth() {
+  return useContext(AuthContext)
+}
