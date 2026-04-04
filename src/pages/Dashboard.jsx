@@ -4,7 +4,7 @@ import {
   BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
-import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Wallet, Loader2, ShieldCheck, Pencil, Check, X, Scale, Bell } from 'lucide-react'
+import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Wallet, Loader2, ShieldCheck, Pencil, Check, X, Scale, Bell, BellOff, BellRing } from 'lucide-react'
 import StatCard from '../components/StatCard'
 import { SkeletonStatCard } from '../components/SkeletonCard'
 import { resumo, listar } from '../api/lancamentos'
@@ -13,6 +13,7 @@ import * as usuarioApi from '../api/usuario'
 import * as orcamentosApi from '../api/orcamentos'
 import { fmt, formatDate, MESES, yAxisFmt } from '../utils/formatters'
 import { useMonthNavigation } from '../hooks/useMonthNavigation'
+import { usePushNotification } from '../hooks/usePushNotification'
 
 const COLORS = ['#14b8a6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
 
@@ -42,6 +43,7 @@ function CustomTooltipPie({ active, payload }) {
 
 export default function Dashboard() {
   const { mes, ano, prevMes, nextMes } = useMonthNavigation()
+  const { status: pushStatus, ativar: ativarPush, desativar: desativarPush } = usePushNotification()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -119,14 +121,41 @@ export default function Dashboard() {
           <h1 className="font-display text-xl font-semibold text-white">Dashboard</h1>
           <p className="text-zinc-500 text-sm mt-0.5">Visão geral das suas finanças</p>
         </div>
-        <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
-          <button onClick={prevMes} className="p-1 hover:bg-zinc-800 rounded-lg transition-colors">
-            <ChevronLeft size={16} className="text-zinc-500" />
-          </button>
-          <span className="text-sm font-medium text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
-          <button onClick={nextMes} className="p-1 hover:bg-zinc-800 rounded-lg transition-colors">
-            <ChevronRight size={16} className="text-zinc-500" />
-          </button>
+        <div className="flex items-center gap-3">
+          {pushStatus !== 'unsupported' && (
+            <button
+              onClick={pushStatus === 'active' ? desativarPush : ativarPush}
+              disabled={pushStatus === 'loading'}
+              title={pushStatus === 'active' ? 'Desativar lembretes push' : pushStatus === 'denied' ? 'Notificações bloqueadas no navegador' : 'Ativar lembretes dos dias 1 e 15'}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
+                pushStatus === 'active'
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
+                  : pushStatus === 'denied'
+                  ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
+                  : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+              }`}
+            >
+              {pushStatus === 'loading' ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : pushStatus === 'active' ? (
+                <BellRing size={13} />
+              ) : pushStatus === 'denied' ? (
+                <BellOff size={13} />
+              ) : (
+                <Bell size={13} />
+              )}
+              {pushStatus === 'active' ? 'Lembretes ativos' : pushStatus === 'denied' ? 'Bloqueado' : 'Ativar lembretes'}
+            </button>
+          )}
+          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
+            <button onClick={prevMes} className="p-1 hover:bg-zinc-800 rounded-lg transition-colors">
+              <ChevronLeft size={16} className="text-zinc-500" />
+            </button>
+            <span className="text-sm font-medium text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
+            <button onClick={nextMes} className="p-1 hover:bg-zinc-800 rounded-lg transition-colors">
+              <ChevronRight size={16} className="text-zinc-500" />
+            </button>
+          </div>
         </div>
       </div>
 
