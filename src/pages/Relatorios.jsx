@@ -3,7 +3,7 @@ import {
   BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
-import { ChevronLeft, ChevronRight, Loader2, TrendingUp, TrendingDown, Wallet } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, TrendingUp, TrendingDown, Wallet, FileDown } from 'lucide-react'
 import * as relApi from '../api/relatorios'
 
 import { fmt, MESES, yAxisFmt } from '../utils/formatters'
@@ -372,6 +372,21 @@ const TABS = [
 
 export default function Relatorios() {
   const [tab, setTab] = useState('evolucao')
+  async function handleExportar() {
+    try {
+      const now = new Date()
+      // Pega mes/ano da tab ativa se possível, ou usa atual
+      const res = await relApi.exportar(now.getMonth() + 1, now.getFullYear())
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `relatorio_${now.getFullYear()}_${now.getMonth() + 1}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } catch { alert('Erro ao exportar relatório.') }
+  }
+
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -379,6 +394,11 @@ export default function Relatorios() {
         <div>
           <h1 className="font-display text-xl font-semibold text-white">Relatórios</h1>
           <p className="text-zinc-500 text-sm mt-0.5">Análise detalhada das suas finanças</p>
+        </div>        <div className="flex items-center gap-4">
+          <button onClick={handleExportar} className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+            <FileDown size={16} /> Exportar CSV
+          </button>
+        </div><div>
         </div>
       </div>
 

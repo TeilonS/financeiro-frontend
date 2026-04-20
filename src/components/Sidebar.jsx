@@ -17,6 +17,7 @@ const links = [
   { to: '/relatorios',   label: 'Relatórios',   Icon: BarChart2 },
   { to: '/recorrencias', label: 'Recorrências', Icon: RefreshCw },
   { to: '/backup',       label: 'Backup',       Icon: HardDrive },
+  { to: '/investimentos', label: 'Investimentos', Icon: PiggyBank },
 ]
 
 export default function Sidebar() {
@@ -34,44 +35,44 @@ export default function Sidebar() {
     : 'U'
 
   return (
-    <aside className="w-56 bg-[#09090B] flex flex-col shrink-0 border-r border-zinc-800/60">
+    <aside className="w-64 bg-[#0A0A0A] flex flex-col shrink-0 border-r border-white/5">
 
       {/* Marca */}
-      <div className="px-5 py-5 border-b border-zinc-800/60">
-        <div className="flex items-center gap-2.5">
+      <div className="px-6 py-8">
+        <div className="flex items-center gap-3">
           {/* Ícone geométrico — identidade visual */}
-          <div className="w-7 h-7 bg-primary-500 rounded-md flex items-center justify-center shrink-0">
-            <Wallet size={14} className="text-zinc-900" />
+          <div className="w-8 h-8 bg-primary-500 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-500/20">
+            <Wallet size={16} className="text-white" />
           </div>
           <div>
-            <p className="font-display font-700 text-white text-sm leading-none tracking-tight">Financeiro</p>
-            <p className="text-2xs text-zinc-500 mt-0.5 tracking-widest uppercase font-medium">Pessoal</p>
+            <p className="font-sans font-bold text-white text-base leading-none tracking-tight">Financial</p>
+            <p className="text-[10px] text-zinc-500 mt-1 tracking-[0.2em] uppercase font-bold">Intelligence</p>
           </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         {links.map(({ to, label, Icon, exact }) => (
           <NavLink
             key={to}
             to={to}
             end={exact}
             className={({ isActive }) =>
-              `relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-100 ${
+              `group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-all duration-200 ${
                 isActive
-                  ? 'bg-zinc-800/50 text-white font-medium'
-                  : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/30 font-normal'
+                  ? 'bg-primary-500/10 text-white font-bold'
+                  : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/5 font-medium'
               }`
             }
           >
             {({ isActive }) => (
               <>
-                {isActive && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary-400 rounded-full" />
-                )}
-                <Icon size={15} className={isActive ? 'text-primary-400' : ''} />
+                <Icon size={18} className={isActive ? 'text-primary-500' : 'group-hover:text-zinc-200 transition-colors'} />
                 <span>{label}</span>
+                {isActive && (
+                   <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+                )}
               </>
             )}
           </NavLink>
@@ -79,29 +80,30 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-3 border-t border-zinc-800/60 space-y-0.5">
+      <div className="p-4 mt-auto border-t border-white/5 space-y-1">
         <button
           onClick={toggle}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/30 text-sm transition-all"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-zinc-500 hover:text-zinc-200 hover:bg-white/5 text-sm font-medium transition-all"
         >
-          {dark ? <Sun size={14} /> : <Moon size={14} />}
-          {dark ? 'Modo claro' : 'Modo escuro'}
+          {dark ? <Sun size={16} /> : <Moon size={16} />}
+          <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
         </button>
 
-        <div className="flex items-center gap-2.5 px-3 py-2">
-          <div className="w-6 h-6 bg-primary-600 rounded-md flex items-center justify-center text-white text-2xs font-bold shrink-0 font-display">
+        <div className="flex items-center gap-3 px-4 py-4 mb-2">
+          <div className="w-8 h-8 bg-zinc-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-zinc-300 text-xs font-medium truncate">{user?.nome || 'Usuário'}</p>
+            <p className="text-white text-xs font-bold truncate">{user?.nome || 'Usuário'}</p>
+            <p className="text-[10px] text-zinc-500 font-medium">Premium Member</p>
           </div>
         </div>
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-zinc-800/30 text-sm transition-all"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-zinc-500 hover:text-primary-400 hover:bg-primary-500/5 text-sm font-medium transition-all"
         >
-          <LogOut size={14} />
+          <LogOut size={16} />
           Sair
         </button>
       </div>

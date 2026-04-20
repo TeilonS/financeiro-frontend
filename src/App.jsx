@@ -16,6 +16,7 @@ const Recorrencias = lazy(() => import('./pages/Recorrencias'))
 const Cartoes      = lazy(() => import('./pages/Cartoes'))
 const Orcamentos   = lazy(() => import('./pages/Orcamentos'))
 const Backup       = lazy(() => import('./pages/Backup'))
+const Investimentos = lazy(() => import('./pages/Investimentos'))
 
 function PrivateRoute({ children }) {
   const { user } = useAuth()
@@ -55,6 +56,7 @@ export default function App() {
               <Route path="relatorios" element={<Suspense fallback={<PageLoader />}><Relatorios /></Suspense>} />
               <Route path="recorrencias" element={<Suspense fallback={<PageLoader />}><Recorrencias /></Suspense>} />
               <Route path="backup" element={<Suspense fallback={<PageLoader />}><Backup /></Suspense>} />
+              <Route path="investimentos" element={<Suspense fallback={<PageLoader />}><Investimentos /></Suspense>} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

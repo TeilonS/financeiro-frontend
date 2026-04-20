@@ -9,6 +9,8 @@ const FORMATOS = [
   { value: 'OFX', label: 'OFX' },
   { value: 'CSV_INTER', label: 'CSV Inter' },
   { value: 'CSV_C6', label: 'CSV C6' },
+  { value: 'CSV_NUBANK', label: 'CSV Nubank' },
+  { value: 'CSV_ITAU', label: 'CSV Itaú' },
 ]
 
 export default function Extrato() {

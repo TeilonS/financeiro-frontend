@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import {
-  BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  AreaChart, Area, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts'
 import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Wallet, Loader2, ShieldCheck, Pencil, Check, X, Scale, Bell, BellOff, BellRing } from 'lucide-react'
 import StatCard from '../components/StatCard'
@@ -15,28 +15,81 @@ import { fmt, formatDate, MESES, yAxisFmt } from '../utils/formatters'
 import { useMonthNavigation } from '../hooks/useMonthNavigation'
 import { usePushNotification } from '../hooks/usePushNotification'
 
-const COLORS = ['#14b8a6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
+// Cores para o novo tema Coral
+const CORAL_COLORS = ['#EF4444', '#F87171', '#FC8181', '#FCA5A5', '#FECACA', '#FEE2E2']
 
-function CustomTooltipBar({ active, payload, label }) {
+function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-zinc-800 rounded-xl shadow-lg border border-zinc-800 p-3 text-sm">
-      <p className="font-semibold text-zinc-200 mb-1">{label}</p>
+    <div className="bg-[#111111] rounded-xl shadow-2xl border border-white/5 p-4 text-sm backdrop-blur-md">
+      <p className="font-bold text-white mb-2">{label}</p>
       {payload.map((p) => (
-        <p key={p.dataKey} style={{ color: p.fill }}>
-          {p.name}: {fmt(p.value)}
-        </p>
+        <div key={p.dataKey} className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+          <p className="text-zinc-400 font-medium">
+            {p.name}: <span className="text-white">{fmt(p.value)}</span>
+          </p>
+        </div>
       ))}
     </div>
   )
 }
 
-function CustomTooltipPie({ active, payload }) {
-  if (!active || !payload?.length) return null
+
+function AIGauge({ value }) {
+  const data = [{ value }, { value: 100 - value }]
   return (
-    <div className="bg-zinc-800 rounded-xl shadow-lg border border-zinc-800 p-3 text-sm">
-      <p className="font-semibold text-zinc-200">{payload[0].name}</p>
-      <p className="text-zinc-300">{fmt(payload[0].value)}</p>
+    <div className="relative w-32 h-32 mx-auto">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie data={data} innerRadius={40} outerRadius={50} startAngle={225} endAngle={-45} dataKey="value" stroke="none">
+            <Cell fill="#EF4444" />
+            <Cell fill="#1F1F1F" />
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-xl font-bold text-white">{value}%</span>
+        <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Accuracy</span>
+      </div>
+    </div>
+  )
+}
+
+function CircularBudget({ name, current, limit, percent }) {
+  const data = [
+    { value: Math.min(percent, 100) },
+    { value: Math.max(0, 100 - percent) }
+  ]
+  const color = percent >= 100 ? '#EF4444' : percent >= 80 ? '#F59E0B' : '#EF4444'
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div className="relative w-24 h-24">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              innerRadius={35}
+              outerRadius={45}
+              startAngle={90}
+              endAngle={450}
+              dataKey="value"
+              stroke="none"
+            >
+              <Cell fill={color} />
+              <Cell fill="#1F1F1F" />
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex flex-center flex-col items-center justify-center">
+          <span className="text-sm font-bold text-white leading-none">{percent}%</span>
+        </div>
+      </div>
+      <div className="text-center">
+        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{name}</p>
+        <p className="text-xs font-medium text-white">{fmt(current)}</p>
+      </div>
     </div>
   )
 }
@@ -57,6 +110,7 @@ export default function Dashboard() {
   const [patrimonio, setPatrimonio] = useState(null)
   const [previsao, setPrevisao] = useState(null)
   const [orcamentos, setOrcamentos] = useState([])
+  const [healthScore, setHealthScore] = useState(0)
 
   useEffect(() => {
     async function load() {
@@ -64,7 +118,6 @@ export default function Dashboard() {
       setError('')
       const params = { mes, ano }
 
-      // Wave 1: dados críticos — libera o loading assim que chegarem
       try {
         const [resResumo, resLanc] = await Promise.all([
           resumo(params),
@@ -79,7 +132,6 @@ export default function Dashboard() {
         setLoading(false)
       }
 
-      // Wave 2: gráficos e widgets secundários — não bloqueiam a UI
       Promise.all([
         evolucao(ano),
         topCategorias({ ...params, tipo: 'DESPESA', limit: 6 }),
@@ -89,12 +141,22 @@ export default function Dashboard() {
         orcamentosApi.listar(mes, ano),
       ]).then(([resEvolucao, resCats, resReserva, resPatrimonio, resPrev, resOrc]) => {
         const meses = resEvolucao.data?.meses || []
-        setDadosEvolucao(meses.map(item => ({ ...item, nomeMes: (item.nomeMes || '').substring(0, 3) })))
+        setDadosEvolucao(meses.map(item => ({ ...item, nomeMes: (item.nomeMes || '').substring(0, 3).toUpperCase() })))
         setDadosCategorias(resCats.data || [])
         setReserva(resReserva.data?.valor ?? 0)
         setPatrimonio(resPatrimonio.data)
         setPrevisao(resPrev.data)
-        setOrcamentos(resOrc.data || [])
+                setOrcamentos(resOrc.data || [])
+        
+        // Cálculo de Saúde Financeira (0-100)
+        const receitas = resResumo.data.totalReceitas || 0
+        const despesas = resResumo.data.totalDespesas || 0
+        if (receitas > 0) {
+          const score = Math.max(0, Math.min(100, Math.round(((receitas - despesas) / receitas) * 100)))
+          setHealthScore(score)
+        } else {
+          setHealthScore(0)
+        }
       }).catch(() => {})
     }
     load()
@@ -111,315 +173,307 @@ export default function Dashboard() {
   }
 
   const mesLabel = `${MESES[mes - 1]} ${ano}`
-  const alertasOrcamento = orcamentos.filter(o => o.percentualUsado >= 80)
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="font-display text-xl font-semibold text-white">Dashboard</h1>
-          <p className="text-zinc-500 text-sm mt-0.5">Visão geral das suas finanças</p>
-        </div>
-        <div className="flex items-center gap-3">
-          {pushStatus !== 'unsupported' && (
-            <button
-              onClick={pushStatus === 'active' ? desativarPush : ativarPush}
-              disabled={pushStatus === 'loading'}
-              title={pushStatus === 'active' ? 'Desativar lembretes push' : pushStatus === 'denied' ? 'Notificações bloqueadas no navegador' : 'Ativar lembretes dos dias 1 e 15'}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
-                pushStatus === 'active'
-                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
-                  : pushStatus === 'denied'
-                  ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
-                  : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
-              }`}
-            >
-              {pushStatus === 'loading' ? (
-                <Loader2 size={13} className="animate-spin" />
-              ) : pushStatus === 'active' ? (
-                <BellRing size={13} />
-              ) : pushStatus === 'denied' ? (
-                <BellOff size={13} />
-              ) : (
-                <Bell size={13} />
-              )}
-              {pushStatus === 'active' ? 'Lembretes ativos' : pushStatus === 'denied' ? 'Bloqueado' : 'Ativar lembretes'}
-            </button>
-          )}
-          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
-            <button onClick={prevMes} className="p-1 hover:bg-zinc-800 rounded-lg transition-colors">
-              <ChevronLeft size={16} className="text-zinc-500" />
-            </button>
-            <span className="text-sm font-medium text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
-            <button onClick={nextMes} className="p-1 hover:bg-zinc-800 rounded-lg transition-colors">
-              <ChevronRight size={16} className="text-zinc-500" />
-            </button>
+    <div className="p-8 max-w-[1400px] mx-auto min-h-screen bg-[#050505]">
+      {/* Top Header Section */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12 items-center">
+        <div className="md:col-span-4">
+          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Intelligent Overview</p>
+          <h1 className="font-sans text-4xl font-bold text-white tracking-tighter">{fmt(dadosResumo.saldo)}</h1>
+          <div className="flex items-center gap-2 mt-4">
+             <div className="flex items-center gap-1 text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded-lg border border-white/5">
+                <button onClick={prevMes} className="p-0.5 hover:text-white transition-colors"><ChevronLeft size={16} /></button>
+                <span className="text-[10px] font-bold uppercase tracking-widest min-w-[100px] text-center">{mesLabel}</span>
+                <button onClick={nextMes} className="p-0.5 hover:text-white transition-colors"><ChevronRight size={16} /></button>
+             </div>
           </div>
+        </div>
+        
+        <div className="md:col-span-5 flex justify-center gap-8">
+          {orcamentos.slice(0, 2).map(o => (
+            <CircularBudget key={o.id} name={o.categoriaNome} current={o.valorGasto} limit={o.valorLimite} percent={o.percentualUsado} />
+          ))}
+        </div>
+
+        <div className="md:col-span-3 text-right">
+           <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Monthly Projection</p>
+           <p className="text-xl font-bold text-white">{previsao ? fmt(previsao.saldoProjetado) : '---'}</p>
+           <div className="flex justify-end gap-2 mt-2">
+              <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">IA Calculating</span>
+           </div>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-6">
-          {error}
-        </div>
-      )}
-
-      {/* Alertas de orçamento */}
-      {alertasOrcamento.length > 0 && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <Bell size={15} className="text-amber-600 dark:text-amber-400" />
-            <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">
-              {alertasOrcamento.filter(o => o.percentualUsado >= 100).length > 0
-                ? 'Orçamentos ultrapassados!'
-                : 'Orçamentos próximos do limite'}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {alertasOrcamento.map(o => (
-              <span key={o.id} className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                o.percentualUsado >= 100
-                  ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300'
-                  : 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
-              }`}>
-                {o.categoriaNome}: {o.percentualUsado}%
-              </span>
-            ))}
-          </div>
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-2xl mb-8 flex items-center gap-3">
+          <X size={16} /> {error}
         </div>
       )}
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <SkeletonStatCard /><SkeletonStatCard /><SkeletonStatCard />
         </div>
       ) : (
-        <>
-          {/* Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <StatCard label="Receitas" value={fmt(dadosResumo.totalReceitas)} icon={TrendingUp} color="emerald" />
-            <StatCard label="Despesas" value={fmt(dadosResumo.totalDespesas)} icon={TrendingDown} color="red" />
-            <StatCard label="Saldo" value={fmt(dadosResumo.saldo)} icon={Wallet} color="primary" />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Main Column (8 cols) */}
+          <div className="lg:col-span-8 space-y-8">
+            
+            {/* Stat Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <StatCard label="Total Income" value={fmt(dadosResumo.totalReceitas)} icon={TrendingUp} color="emerald" trend={12} />
+              <StatCard label="Total Expenses" value={fmt(dadosResumo.totalDespesas)} icon={TrendingDown} color="red" trend={-5} />
+              <StatCard label="Net Profit" value={fmt(dadosResumo.saldo)} icon={Wallet} color="primary" />
+            </div>
 
-          {/* Patrimônio + Previsão */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            {patrimonio && (
-              <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 bg-violet-50 dark:bg-violet-900/30 rounded-xl flex items-center justify-center">
-                    <Scale size={16} className="text-violet-600 dark:text-violet-400" />
-                  </div>
-                  <span className="text-sm font-semibold text-zinc-200">Patrimônio Líquido</span>
+            {/* Main Area Chart */}
+            <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-8 shadow-2xl relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-lg font-bold text-white">Cash Flow Evolution</h2>
+                  <p className="text-sm text-zinc-500 mt-1">Monthly performance tracking</p>
                 </div>
-                <p className={`text-2xl font-bold mb-2 ${patrimonio.patrimonioLiquido >= 0 ? 'text-violet-600 dark:text-violet-400' : 'text-red-500'}`}>
-                  {fmt(patrimonio.patrimonioLiquido)}
-                </p>
-                <div className="flex justify-between text-xs text-zinc-500">
-                  <span>Reserva: <strong className="text-emerald-600">{fmt(patrimonio.reservaEmergencia)}</strong></span>
-                  <span>Faturas: <strong className="text-red-500">{fmt(patrimonio.totalFaturas)}</strong></span>
-                </div>
-              </div>
-            )}
-
-            {previsao && (
-              <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-5">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center">
-                      <TrendingUp size={16} className="text-sky-600 dark:text-sky-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-zinc-200">Projeção do Mês</span>
+                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Incomes</span>
                   </div>
-                  <span className="text-xs text-zinc-500">dia {previsao.diasPassados}/{previsao.totalDiasMes}</span>
-                </div>
-
-                {/* Saldo projetado */}
-                <p className={`text-2xl font-bold mb-3 ${previsao.saldoProjetado >= 0 ? 'text-sky-600 dark:text-sky-400' : 'text-red-500'}`}>
-                  {fmt(previsao.saldoProjetado)}
-                </p>
-
-                {/* Breakdown */}
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex justify-between text-zinc-500">
-                    <span>Saldo atual</span>
-                    <span className={previsao.saldoAtual >= 0 ? 'text-zinc-300 font-medium' : 'text-red-500 font-medium'}>
-                      {fmt(previsao.saldoAtual)}
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-primary-500" />
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Expenses</span>
                   </div>
-                  {previsao.recorrenciasPendentes > 0 && (
-                    <>
-                      {previsao.receitasPendentes > 0 && (
-                        <div className="flex justify-between text-zinc-500">
-                          <span>+ Entradas previstas</span>
-                          <span className="text-emerald-600 font-medium">+{fmt(previsao.receitasPendentes)}</span>
-                        </div>
-                      )}
-                      {previsao.despesasPendentes > 0 && (
-                        <div className="flex justify-between text-zinc-500">
-                          <span>− Saídas previstas</span>
-                          <span className="text-red-500 font-medium">−{fmt(previsao.despesasPendentes)}</span>
-                        </div>
-                      )}
-                      <div className="pt-1 border-t border-zinc-800 text-zinc-500">
-                        {previsao.recorrenciasPendentes} recorrência{previsao.recorrenciasPendentes !== 1 ? 's' : ''} pendente{previsao.recorrenciasPendentes !== 1 ? 's' : ''}
-                      </div>
-                    </>
-                  )}
-                  {previsao.recorrenciasPendentes === 0 && (
-                    <div className="text-zinc-500">Todas as recorrências já geradas</div>
-                  )}
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* Reserva de Emergência */}
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-5 mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
-                  <ShieldCheck size={16} className="text-amber-600 dark:text-amber-400" />
-                </div>
-                <span className="text-sm font-semibold text-zinc-200">Reserva de Emergência</span>
-              </div>
-              {!editandoReserva && (
-                <button
-                  onClick={() => { setReservaInput(String(reserva)); setEditandoReserva(true) }}
-                  className="p-1.5 hover:bg-zinc-800 rounded-lg transition-colors"
-                >
-                  <Pencil size={13} className="text-zinc-500" />
-                </button>
-              )}
-            </div>
-            {editandoReserva ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-zinc-500">R$</span>
-                <input
-                  autoFocus type="number" min="0" step="0.01"
-                  value={reservaInput} onChange={e => setReservaInput(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') salvarReserva(); if (e.key === 'Escape') setEditandoReserva(false) }}
-                  className="flex-1 px-3 py-1.5 border border-zinc-700 rounded-xl text-sm dark:bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                />
-                <button onClick={salvarReserva} className="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg">
-                  <Check size={13} />
-                </button>
-                <button onClick={() => setEditandoReserva(false)} className="p-1.5 hover:bg-zinc-800 rounded-lg">
-                  <X size={13} className="text-zinc-500" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-end justify-between">
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{fmt(reserva)}</p>
-                {dadosResumo.totalDespesas > 0 && (
-                  <p className="text-xs text-zinc-500 mb-1">
-                    ≈ {(reserva / (dadosResumo.totalDespesas / mes)).toFixed(1)} meses cobertos
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Charts row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-            <div className="lg:col-span-2 bg-zinc-900 rounded-xl border border-zinc-800 p-6">
-              <h2 className="text-sm font-semibold text-zinc-200 mb-4">Evolução Anual {ano}</h2>
-              {dadosEvolucao.length === 0 ? (
-                <div className="flex items-center justify-center h-64 text-zinc-500 text-sm">Sem dados para exibir</div>
-              ) : (
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={dadosEvolucao} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="nomeMes" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={yAxisFmt} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={60} />
-                    <Tooltip content={<CustomTooltipBar />} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Bar dataKey="totalReceitas" name="Receitas" fill="#10b981" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="totalDespesas" name="Despesas" fill="#ef4444" radius={[4, 4, 0, 0]} />
-                  </BarChart>
+              <div className="h-[350px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={dadosEvolucao} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                        <defs>
+                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4}/>
+                        <stop offset="95%" stopColor="#EF4444" stopOpacity={0}/>
+                      </linearGradient>
+                    
+                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#EF4444" stopOpacity={0}/>
+                      </linearGradient>
+                    
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                    <XAxis 
+                      dataKey="nomeMes" 
+                      tick={{ fontSize: 10, fill: '#525252', fontWeight: 'bold' }} 
+                      axisLine={false} 
+                      tickLine={false} 
+                      dy={15}
+                    />
+                    <YAxis 
+                      tickFormatter={yAxisFmt} 
+                      tick={{ fontSize: 10, fill: '#525252', fontWeight: 'bold' }} 
+                      axisLine={false} 
+                      tickLine={false} 
+                      width={60} 
+                    />
+                    <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#ffffff10', strokeWidth: 1 }} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="totalReceitas" 
+                      name="Income"
+                      stroke="#10b981" 
+                      strokeWidth={3}
+                      fillOpacity={1} 
+                      fill="url(#colorIncome)" 
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="totalDespesas" 
+                      name="Expense"
+                      stroke="#EF4444" 
+                      strokeWidth={3}
+                      fillOpacity={1} 
+                      fill="url(#colorExpense)" 
+                    />
+                  </AreaChart>
                 </ResponsiveContainer>
-              )}
+              </div>
             </div>
 
-            <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
-              <h2 className="text-sm font-semibold text-zinc-200 mb-4">Top Despesas do Mês</h2>
-              {dadosCategorias.length === 0 ? (
-                <div className="flex items-center justify-center h-64 text-zinc-500 text-sm">Sem dados</div>
-              ) : (
-                <>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie data={dadosCategorias} dataKey="total" nameKey="categoriaNome" cx="50%" cy="50%" innerRadius={55} outerRadius={90}>
-                        {dadosCategorias.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltipPie />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="mt-3 space-y-1.5">
-                    {dadosCategorias.map((cat, i) => (
-                      <div key={i} className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                          <span className="text-zinc-400 truncate">{cat.categoriaNome}</span>
+            {/* Bottom Grid: Recent Activity + Category Breakdown */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6">
+                  <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-6">Recent Transactions</h3>
+                  <div className="space-y-4">
+                    {recentesLancamentos.map((l) => (
+                      <div key={l.id} className="flex items-center justify-between group cursor-pointer p-2 rounded-2xl hover:bg-white/5 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${l.tipo === 'RECEITA' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary-500/10 text-primary-500'}`}>
+                            {l.tipo === 'RECEITA' ? '+' : '-'}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-white">{l.descricao}</p>
+                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">{l.categoriaNome || 'Other'}</p>
+                          </div>
                         </div>
-                        <span className="text-zinc-500 ml-2 flex-shrink-0">{cat.percentual}%</span>
+                        <p className={`text-sm font-bold tabular-nums ${l.tipo === 'RECEITA' ? 'text-emerald-500' : 'text-white'}`}>
+                          {fmt(l.valor)}
+                        </p>
                       </div>
                     ))}
                   </div>
-                </>
+               </div>
+
+               <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6">
+                  <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-widest">AI Assistant</h3>
+                    <div className="p-1.5 bg-primary-500/10 rounded-lg"><ShieldCheck size={14} className="text-primary-500" /></div>
+                  </div>
+                  <AIGauge value={healthScore} />
+                  <div className="mt-8 space-y-3">
+                    <p className="text-[10px] text-zinc-500 leading-relaxed text-center px-4">
+                      {healthScore > 70 
+                      ? "Your financial health is excellent! You are saving a good portion of your income." 
+                      : healthScore > 40 
+                      ? "Good balance, but watch out for elective expenses this week." 
+                      : "Warning: Your expenses are very close to your total income."}
+                    </p>
+                  </div>
+               </div>
+
+               <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6">
+                  <h3 className="text-xs font-bold text-white uppercase tracking-widest mb-6">Spending by Category</h3>
+                  <div className="space-y-5 mt-4">
+                    {dadosCategorias.slice(0, 4).map((cat, i) => (
+                      <div key={i} className="space-y-2">
+                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
+                          <span className="text-zinc-400">{cat.categoriaNome}</span>
+                          <span className="text-white">{cat.percentual}%</span>
+                        </div>
+                        <div className="h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-primary-500 rounded-full transition-all duration-1000" 
+                            style={{ width: `${cat.percentual}%`, backgroundColor: CORAL_COLORS[i % CORAL_COLORS.length] }} 
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+               </div>
+            </div>
+          </div>
+
+          {/* Sidebar Column (4 cols) */}
+          <div className="lg:col-span-4 space-y-8">
+            
+            {/* Patrimonio Card */}
+            {patrimonio && (
+              <div className="bg-primary-500 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-primary-500/20">
+                <div className="absolute top-0 right-0 p-8 opacity-20">
+                  <Scale size={80} />
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80">Net Worth</p>
+                <h2 className="text-4xl font-bold mb-8 tabular-nums">{fmt(patrimonio.patrimonioLiquido)}</h2>
+                
+                <div className="grid grid-cols-2 gap-4">
+                   <div className="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
+                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Reserve</p>
+                      <p className="text-sm font-bold mt-1">{fmt(patrimonio.reservaEmergencia)}</p>
+                   </div>
+                   <div className="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
+                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Invested</p>
+                      <p className="text-sm font-bold mt-1">{fmt(patrimonio.totalInvestimentos)}</p>
+                   </div>
+                   <div className="bg-black/10 p-3 rounded-2xl backdrop-blur-sm col-span-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Debts</p>
+                      <p className="text-sm font-bold mt-1">{fmt(patrimonio.totalFaturas)}</p>
+                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Projection Card */}
+            {previsao && (
+              <div className="bg-zinc-900/50 rounded-3xl border border-white/5 p-8">
+                 <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-sm font-bold text-white uppercase tracking-widest">Monthly Projection</h3>
+                    <TrendingUp size={16} className="text-primary-400" />
+                 </div>
+                 
+                 <p className="text-3xl font-bold text-white mb-6 tabular-nums">{fmt(previsao.saldoProjetado)}</p>
+                 
+                 <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                       <span className="text-xs font-medium text-zinc-500">Current Balance</span>
+                       <span className="text-xs font-bold text-white">{fmt(previsao.saldoAtual)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                       <span className="text-xs font-medium text-zinc-500">Pending Incomes</span>
+                       <span className="text-xs font-bold text-emerald-500">+{fmt(previsao.receitasPendentes)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                       <span className="text-xs font-medium text-zinc-500">Pending Expenses</span>
+                       <span className="text-xs font-bold text-primary-400">-{fmt(previsao.despesasPendentes)}</span>
+                    </div>
+                 </div>
+                 
+                 <div className="mt-8 pt-8 border-t border-white/5">
+                    <div className="flex justify-between items-end mb-2">
+                       <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Progress</span>
+                       <span className="text-xs font-bold text-white">{Math.round((previsao.diasPassados / previsao.totalDiasMes) * 100)}%</span>
+                    </div>
+                    <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                       <div 
+                         className="h-full bg-primary-500 rounded-full" 
+                         style={{ width: `${(previsao.diasPassados / previsao.totalDiasMes) * 100}%` }} 
+                       />
+                    </div>
+                 </div>
+              </div>
+            )}
+
+            {/* Emergency Reserve Manager */}
+            <div className="bg-zinc-900/50 rounded-3xl border border-white/5 p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-sm font-bold text-white uppercase tracking-widest">Emergency Fund</h3>
+                <ShieldCheck size={16} className="text-zinc-500" />
+              </div>
+              
+              {editandoReserva ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    autoFocus type="number"
+                    value={reservaInput} onChange={e => setReservaInput(e.target.value)}
+                    className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-primary-500"
+                  />
+                  <button onClick={salvarReserva} className="p-2 bg-primary-500 rounded-xl"><Check size={16} className="text-white" /></button>
+                </div>
+              ) : (
+                <div className="flex items-end justify-between group">
+                   <div>
+                      <p className="text-3xl font-bold text-white tabular-nums">{fmt(reserva)}</p>
+                      <p className="text-xs font-medium text-zinc-500 mt-1">Safety target achieved</p>
+                   </div>
+                   <button 
+                     onClick={() => { setReservaInput(String(reserva)); setEditandoReserva(true) }}
+                     className="p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/5 rounded-xl"
+                   >
+                     <Pencil size={14} className="text-zinc-500" />
+                   </button>
+                </div>
               )}
             </div>
           </div>
-
-          {/* Orçamentos */}
-          {orcamentos.length > 0 && (
-            <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-4">
-              <h2 className="text-sm font-semibold text-zinc-200 mb-4">Orçamentos do Mês</h2>
-              <div className="space-y-3">
-                {orcamentos.map(o => (
-                  <div key={o.id}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="font-medium text-zinc-300">{o.categoriaNome}</span>
-                      <span className="text-zinc-500">{fmt(o.valorGasto)} <span className="text-zinc-500 dark:text-zinc-500">/</span> {fmt(o.valorLimite)}</span>
-                    </div>
-                    <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all"
-                        style={{ width: `${Math.min(o.percentualUsado, 100)}%`, backgroundColor: o.percentualUsado >= 100 ? '#ef4444' : o.percentualUsado >= 80 ? '#f59e0b' : '#14b8a6' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Últimos Lançamentos */}
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
-            <h2 className="text-sm font-semibold text-zinc-200 mb-4">Últimos Lançamentos</h2>
-            {recentesLancamentos.length === 0 ? (
-              <p className="text-zinc-500 text-sm text-center py-8">Nenhum lançamento neste mês.</p>
-            ) : (
-              <div className="divide-y divide-zinc-800">
-                {recentesLancamentos.map((l) => (
-                  <div key={l.id} className="flex items-center justify-between py-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${l.tipo === 'RECEITA' ? 'bg-emerald-400' : 'bg-red-400'}`} />
-                      <div>
-                        <p className="text-sm font-medium text-zinc-200">{l.descricao}</p>
-                        <p className="text-xs text-zinc-500">{l.categoriaNome || l.categoria?.nome || '—'} · {formatDate(l.data)}</p>
-                      </div>
-                    </div>
-                    <span className={`text-sm font-semibold ${l.tipo === 'RECEITA' ? 'text-emerald-600' : 'text-red-500'}`}>
-                      {l.tipo === 'RECEITA' ? '+' : '-'}{fmt(l.valor)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </>
+        </div>
       )}
     </div>
   )

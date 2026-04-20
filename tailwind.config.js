@@ -10,32 +10,33 @@ export default {
         mono:    ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
-        // Amber/gold — identidade premium, sem ser o "teal genérico de fintech"
+        // Coral/Red — identidade vibrante e moderna
         primary: {
-          50:  '#FFFBEB',
-          100: '#FEF3C7',
-          200: '#FDE68A',
-          300: '#FCD34D',
-          400: '#FBBF24',
-          500: '#F59E0B',
-          600: '#B45309', // botões — 4.9:1 contraste com branco ✓
-          700: '#92400E', // hover
-          800: '#78350F',
-          900: '#451A03',
-          950: '#1F0A01',
+          50:  '#FFF5F5',
+          100: '#FED7D7',
+          200: '#FEB2B2',
+          300: '#FC8181',
+          400: '#F56565',
+          500: '#EF4444', // base
+          600: '#E53E3E', // botões
+          700: '#C53030', // hover
+          800: '#9B2C2C',
+          900: '#742A2A',
+          950: '#1A0505',
         },
-        // Surface tokens para dark mode consistente
+        // Surface tokens para dark mode profundo (Deep Black)
         surface: {
-          900: '#09090B', // fundo base
-          800: '#111113', // fundo principal
-          700: '#18181B', // cards
-          600: '#1F1F24', // cards elevados
-          500: '#27272A', // bordas
-          400: '#3F3F46', // bordas visíveis
-          300: '#52525B', // texto sutil
-          200: '#71717A', // texto muted
-          100: '#A1A1AA', // texto secundário
-          50:  '#D4D4D8', // texto terciário
+          950: '#050505', // fundo absoluto
+          900: '#0A0A0A', // fundo base
+          800: '#111111', // fundo principal
+          700: '#171717', // cards
+          600: '#1F1F1F', // cards elevados
+          500: '#262626', // bordas
+          400: '#404040', // bordas visíveis
+          300: '#525252', // texto sutil
+          200: '#737373', // texto muted
+          100: '#A3A3A3', // texto secundário
+          50:  '#E5E5E5', // texto terciário
         },
       },
       fontSize: {
@@ -45,8 +46,8 @@ export default {
         widest: '0.2em',
       },
       boxShadow: {
-        'glow-gold': '0 0 20px rgba(251,191,36,0.15)',
-        'glow-sm':   '0 0 8px rgba(251,191,36,0.1)',
+        'glow-coral': '0 0 20px rgba(239,68,68,0.15)',
+        'glow-sm':    '0 0 8px rgba(239,68,68,0.1)',
       },
     },
   },
