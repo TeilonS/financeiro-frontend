@@ -3,7 +3,7 @@ import { Plus, Trash2, Loader2, Tag, AlertCircle, ChevronRight } from 'lucide-re
 import Modal from '../components/Modal'
 import * as catApi from '../api/categorias'
 
-const EMPTY_FORM = { nome: '', tipo: 'DESPESA', cor: '#6366f1', categoriaPaiId: '' }
+const EMPTY_FORM = { nome: '', tipo: 'DESPESA', cor: '#EF4444', categoriaPaiId: '' }
 
 const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
@@ -173,7 +173,7 @@ function CategoryCard({ cat, deletandoId, setDeletandoId, handleDelete, isRoot }
   return (
     <div className={`bg-zinc-900 rounded-xl border border-zinc-800 p-4 flex items-center justify-between group ${isRoot ? '' : 'py-3'}`}>
       <div className="flex items-center gap-3">
-        <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.cor || '#6366f1' }} />
+        <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.cor || '#EF4444' }} />
         <div>
           <p className="text-sm font-medium text-zinc-200">{cat.nome}</p>
           <span className={`text-xs font-medium ${cat.tipo === 'RECEITA' ? 'text-emerald-600' : 'text-red-500'}`}>{cat.tipo}</span>

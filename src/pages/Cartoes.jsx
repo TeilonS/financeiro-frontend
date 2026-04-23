@@ -4,9 +4,9 @@ import Modal from '../components/Modal'
 import * as cartoesApi from '../api/cartoes'
 import { fmt } from '../utils/formatters'
 
-const CORES = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#ec4899']
+const CORES = ['#EF4444', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#ec4899']
 
-const EMPTY = { nome: '', limite: '', faturaAtual: '', diaVencimento: '', cor: '#6366f1' }
+const EMPTY = { nome: '', limite: '', faturaAtual: '', diaVencimento: '', cor: '#EF4444' }
 
 const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
@@ -37,7 +37,7 @@ export default function Cartoes() {
   function openNew() { setEditando(null); setForm(EMPTY); setFormError(''); setModalOpen(true) }
   function openEdit(c) {
     setEditando(c)
-    setForm({ nome: c.nome, limite: String(c.limite), faturaAtual: String(c.faturaAtual ?? 0), diaVencimento: String(c.diaVencimento), cor: c.cor || '#6366f1' })
+    setForm({ nome: c.nome, limite: String(c.limite), faturaAtual: String(c.faturaAtual ?? 0), diaVencimento: String(c.diaVencimento), cor: c.cor || '#EF4444' })
     setFormError(''); setModalOpen(true)
   }
 
