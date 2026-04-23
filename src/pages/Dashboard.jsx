@@ -21,13 +21,13 @@ const CORAL_COLORS = ['#EF4444', '#F87171', '#FC8181', '#FCA5A5', '#FECACA', '#F
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#111111] rounded-xl shadow-2xl border border-white/5 p-4 text-sm backdrop-blur-md">
-      <p className="font-bold text-white mb-2">{label}</p>
+    <div className="bg-[#111111] rounded-xl shadow-2xl border border-zinc-200 dark:border-white/5 p-4 text-sm backdrop-blur-md">
+      <p className="font-bold text-zinc-900 dark:text-white mb-2">{label}</p>
       {payload.map((p) => (
         <div key={p.dataKey} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
           <p className="text-zinc-400 font-medium">
-            {p.name}: <span className="text-white">{fmt(p.value)}</span>
+            {p.name}: <span className="text-zinc-900 dark:text-white">{fmt(p.value)}</span>
           </p>
         </div>
       ))}
@@ -49,7 +49,7 @@ function AIGauge({ value }) {
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-xl font-bold text-white">{value}%</span>
+        <span className="text-xl font-bold text-zinc-900 dark:text-white">{value}%</span>
         <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Accuracy</span>
       </div>
     </div>
@@ -83,12 +83,12 @@ function CircularBudget({ name, current, limit, percent }) {
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-center flex-col items-center justify-center">
-          <span className="text-sm font-bold text-white leading-none">{percent}%</span>
+          <span className="text-sm font-bold text-zinc-900 dark:text-white leading-none">{percent}%</span>
         </div>
       </div>
       <div className="text-center">
         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{name}</p>
-        <p className="text-xs font-medium text-white">{fmt(current)}</p>
+        <p className="text-xs font-medium text-zinc-900 dark:text-white">{fmt(current)}</p>
       </div>
     </div>
   )
@@ -175,17 +175,17 @@ export default function Dashboard() {
   const mesLabel = `${MESES[mes - 1]} ${ano}`
 
   return (
-    <div className="p-8 max-w-[1400px] mx-auto min-h-screen bg-[#050505]">
+    <div className="p-8 max-w-[1400px] mx-auto min-h-screen bg-white dark:bg-[#050505]">
       {/* Top Header Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12 items-center">
         <div className="md:col-span-4">
           <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Intelligent Overview</p>
-          <h1 className="font-sans text-4xl font-bold text-white tracking-tighter">{fmt(dadosResumo.saldo)}</h1>
+          <h1 className="font-sans text-4xl font-bold text-zinc-900 dark:text-white tracking-tighter">{fmt(dadosResumo.saldo)}</h1>
           <div className="flex items-center gap-2 mt-4">
-             <div className="flex items-center gap-1 text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded-lg border border-white/5">
-                <button onClick={prevMes} className="p-0.5 hover:text-white transition-colors"><ChevronLeft size={16} /></button>
+             <div className="flex items-center gap-1 text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded-lg border border-zinc-200 dark:border-white/5">
+                <button onClick={prevMes} className="p-0.5 hover:text-zinc-900 dark:text-white transition-colors"><ChevronLeft size={16} /></button>
                 <span className="text-[10px] font-bold uppercase tracking-widest min-w-[100px] text-center">{mesLabel}</span>
-                <button onClick={nextMes} className="p-0.5 hover:text-white transition-colors"><ChevronRight size={16} /></button>
+                <button onClick={nextMes} className="p-0.5 hover:text-zinc-900 dark:text-white transition-colors"><ChevronRight size={16} /></button>
              </div>
           </div>
         </div>
@@ -198,7 +198,7 @@ export default function Dashboard() {
 
         <div className="md:col-span-3 text-right">
            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Monthly Projection</p>
-           <p className="text-xl font-bold text-white">{previsao ? fmt(previsao.saldoProjetado) : '---'}</p>
+           <p className="text-xl font-bold text-zinc-900 dark:text-white">{previsao ? fmt(previsao.saldoProjetado) : '---'}</p>
            <div className="flex justify-end gap-2 mt-2">
               <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">IA Calculating</span>
@@ -230,10 +230,10 @@ export default function Dashboard() {
             </div>
 
             {/* Main Area Chart */}
-            <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-8 shadow-2xl relative overflow-hidden group">
+            <div className="bg-zinc-50 dark:bg-[#0A0A0A] rounded-3xl border border-zinc-200 dark:border-white/5 p-8 shadow-2xl relative overflow-hidden group">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-lg font-bold text-white">Cash Flow Evolution</h2>
+                  <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Cash Flow Evolution</h2>
                   <p className="text-sm text-zinc-500 mt-1">Monthly performance tracking</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -301,8 +301,8 @@ export default function Dashboard() {
 
             {/* Bottom Grid: Recent Activity + Category Breakdown */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-               <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-6">Recent Transactions</h3>
+               <div className="bg-zinc-50 dark:bg-[#0A0A0A] rounded-3xl border border-zinc-200 dark:border-white/5 p-6">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-widest mb-6">Recent Transactions</h3>
                   <div className="space-y-4">
                     {recentesLancamentos.map((l) => (
                       <div key={l.id} className="flex items-center justify-between group cursor-pointer p-2 rounded-2xl hover:bg-white/5 transition-colors">
@@ -311,11 +311,11 @@ export default function Dashboard() {
                             {l.tipo === 'RECEITA' ? '+' : '-'}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-white">{l.descricao}</p>
+                            <p className="text-sm font-bold text-zinc-900 dark:text-white">{l.descricao}</p>
                             <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">{l.categoriaNome || 'Other'}</p>
                           </div>
                         </div>
-                        <p className={`text-sm font-bold tabular-nums ${l.tipo === 'RECEITA' ? 'text-emerald-500' : 'text-white'}`}>
+                        <p className={`text-sm font-bold tabular-nums ${l.tipo === 'RECEITA' ? 'text-emerald-500' : 'text-zinc-900 dark:text-white'}`}>
                           {fmt(l.valor)}
                         </p>
                       </div>
@@ -323,9 +323,9 @@ export default function Dashboard() {
                   </div>
                </div>
 
-               <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6">
+               <div className="bg-zinc-50 dark:bg-[#0A0A0A] rounded-3xl border border-zinc-200 dark:border-white/5 p-6">
                   <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-xs font-bold text-white uppercase tracking-widest">AI Assistant</h3>
+                    <h3 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-widest">AI Assistant</h3>
                     <div className="p-1.5 bg-primary-500/10 rounded-lg"><ShieldCheck size={14} className="text-primary-500" /></div>
                   </div>
                   <AIGauge value={healthScore} />
@@ -340,14 +340,14 @@ export default function Dashboard() {
                   </div>
                </div>
 
-               <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-widest mb-6">Spending by Category</h3>
+               <div className="bg-zinc-50 dark:bg-[#0A0A0A] rounded-3xl border border-zinc-200 dark:border-white/5 p-6">
+                  <h3 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-widest mb-6">Spending by Category</h3>
                   <div className="space-y-5 mt-4">
                     {dadosCategorias.slice(0, 4).map((cat, i) => (
                       <div key={i} className="space-y-2">
                         <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
                           <span className="text-zinc-400">{cat.categoriaNome}</span>
-                          <span className="text-white">{cat.percentual}%</span>
+                          <span className="text-zinc-900 dark:text-white">{cat.percentual}%</span>
                         </div>
                         <div className="h-1.5 bg-zinc-900 rounded-full overflow-hidden">
                           <div 
@@ -367,7 +367,7 @@ export default function Dashboard() {
             
             {/* Patrimonio Card */}
             {patrimonio && (
-              <div className="bg-primary-500 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-primary-500/20">
+              <div className="bg-primary-500 rounded-3xl p-8 text-zinc-900 dark:text-white relative overflow-hidden shadow-2xl shadow-primary-500/20">
                 <div className="absolute top-0 right-0 p-8 opacity-20">
                   <Scale size={80} />
                 </div>
@@ -393,18 +393,18 @@ export default function Dashboard() {
 
             {/* Projection Card */}
             {previsao && (
-              <div className="bg-zinc-900/50 rounded-3xl border border-white/5 p-8">
+              <div className="bg-zinc-900/50 rounded-3xl border border-zinc-200 dark:border-white/5 p-8">
                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-sm font-bold text-white uppercase tracking-widest">Monthly Projection</h3>
+                    <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-widest">Monthly Projection</h3>
                     <TrendingUp size={16} className="text-primary-400" />
                  </div>
                  
-                 <p className="text-3xl font-bold text-white mb-6 tabular-nums">{fmt(previsao.saldoProjetado)}</p>
+                 <p className="text-3xl font-bold text-zinc-900 dark:text-white mb-6 tabular-nums">{fmt(previsao.saldoProjetado)}</p>
                  
                  <div className="space-y-4">
                     <div className="flex justify-between items-center">
                        <span className="text-xs font-medium text-zinc-500">Current Balance</span>
-                       <span className="text-xs font-bold text-white">{fmt(previsao.saldoAtual)}</span>
+                       <span className="text-xs font-bold text-zinc-900 dark:text-white">{fmt(previsao.saldoAtual)}</span>
                     </div>
                     <div className="flex justify-between items-center">
                        <span className="text-xs font-medium text-zinc-500">Pending Incomes</span>
@@ -416,10 +416,10 @@ export default function Dashboard() {
                     </div>
                  </div>
                  
-                 <div className="mt-8 pt-8 border-t border-white/5">
+                 <div className="mt-8 pt-8 border-t border-zinc-200 dark:border-white/5">
                     <div className="flex justify-between items-end mb-2">
                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Progress</span>
-                       <span className="text-xs font-bold text-white">{Math.round((previsao.diasPassados / previsao.totalDiasMes) * 100)}%</span>
+                       <span className="text-xs font-bold text-zinc-900 dark:text-white">{Math.round((previsao.diasPassados / previsao.totalDiasMes) * 100)}%</span>
                     </div>
                     <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
                        <div 
@@ -432,9 +432,9 @@ export default function Dashboard() {
             )}
 
             {/* Emergency Reserve Manager */}
-            <div className="bg-zinc-900/50 rounded-3xl border border-white/5 p-8">
+            <div className="bg-zinc-900/50 rounded-3xl border border-zinc-200 dark:border-white/5 p-8">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-bold text-white uppercase tracking-widest">Emergency Fund</h3>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-widest">Emergency Fund</h3>
                 <ShieldCheck size={16} className="text-zinc-500" />
               </div>
               
@@ -443,14 +443,14 @@ export default function Dashboard() {
                   <input
                     autoFocus type="number"
                     value={reservaInput} onChange={e => setReservaInput(e.target.value)}
-                    className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-primary-500"
+                    className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-zinc-900 dark:text-white focus:outline-none focus:border-primary-500"
                   />
-                  <button onClick={salvarReserva} className="p-2 bg-primary-500 rounded-xl"><Check size={16} className="text-white" /></button>
+                  <button onClick={salvarReserva} className="p-2 bg-primary-500 rounded-xl"><Check size={16} className="text-zinc-900 dark:text-white" /></button>
                 </div>
               ) : (
                 <div className="flex items-end justify-between group">
                    <div>
-                      <p className="text-3xl font-bold text-white tabular-nums">{fmt(reserva)}</p>
+                      <p className="text-3xl font-bold text-zinc-900 dark:text-white tabular-nums">{fmt(reserva)}</p>
                       <p className="text-xs font-medium text-zinc-500 mt-1">Safety target achieved</p>
                    </div>
                    <button 
