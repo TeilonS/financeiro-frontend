@@ -251,7 +251,7 @@ export default function Dashboard() {
               <div className="h-[350px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={dadosEvolucao} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                                        <defs>
+                    <defs>
                       <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
                         <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
@@ -260,17 +260,7 @@ export default function Dashboard() {
                         <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4}/>
                         <stop offset="95%" stopColor="#EF4444" stopOpacity={0}/>
                       </linearGradient>
-                    
-                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#EF4444" stopOpacity={0}/>
-                      </linearGradient>
-                    
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                    </defs><CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
                     <XAxis 
                       dataKey="nomeMes" 
                       tick={{ fontSize: 10, fill: '#525252', fontWeight: 'bold' }} 
