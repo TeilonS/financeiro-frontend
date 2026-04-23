@@ -6,9 +6,9 @@ import api from '../api'
 import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-const inputCls = 'w-full px-4 py-2.5 rounded-xl text-sm bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/40 focus:border-primary-500/40 transition-colors'
+const inputCls = 'w-full px-4 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/40 focus:border-primary-500/40 transition-colors'
 
-export default function Login() {
+export default function Entrar() {
   const { login, user } = useAuth()
   const navigate = useNavigate()
   const [mode, setMode] = useState('login') // 'login', 'register', 'forgot'
@@ -62,26 +62,26 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] flex">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#050505] flex">
 
       {/* Painel esquerdo — brand */}
-      <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] shrink-0 flex-col justify-between px-12 py-12 border-r border-white/5 relative overflow-hidden bg-[#0A0A0A]">
+      <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] shrink-0 flex-col justify-between px-12 py-12 border-r border-zinc-200 dark:border-white/5 relative overflow-hidden bg-white dark:bg-[#0A0A0A]">
         {/* Marca */}
         <div className="relative">
           <div className="flex items-center gap-3 mb-24">
             <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-              <span className="font-sans font-bold text-white text-lg">F</span>
+              <span className="font-sans font-bold text-zinc-900 dark:text-white text-lg">F</span>
             </div>
-            <span className="font-sans font-bold text-white text-xl tracking-tight">Financial Intel</span>
+            <span className="font-sans font-bold text-zinc-900 dark:text-white text-xl tracking-tight">Financeiro Intel</span>
           </div>
 
           <div className="space-y-8">
-            <h1 className="font-sans font-bold text-white text-4xl xl:text-5xl leading-tight tracking-tight">
-              Master your<br />
-              <span className="text-primary-500">financial life.</span>
+            <h1 className="font-sans font-bold text-zinc-900 dark:text-white text-4xl xl:text-5xl leading-tight tracking-tight">
+              Domine sua<br />
+              <span className="text-primary-500">vida financeira.</span>
             </h1>
             <p className="text-zinc-500 text-lg leading-relaxed max-w-xs">
-              Professional tools for personal growth. Track, analyze and grow your wealth.
+              Ferramentas profissionais para evolução financeira. Acompanhe e analise seu patrimônio.
             </p>
           </div>
         </div>
@@ -89,11 +89,11 @@ export default function Login() {
         {/* Métricas decorativas */}
         <div className="relative space-y-4">
           {[
-            { label: 'Monthly Balance', value: 'R$ 2.840,00', color: 'text-emerald-500' },
-            { label: 'Fixed Expenses', value: 'R$ 1.560,00', color: 'text-primary-400' },
-            { label: 'Financial Goal', value: '73%', color: 'text-white' },
+            { label: 'Saldo Mensal', value: 'R$ 2.840,00', color: 'text-emerald-500' },
+            { label: 'Despesas Fixas', value: 'R$ 1.560,00', color: 'text-primary-400' },
+            { label: 'Meta Financeira', value: '73%', color: 'text-zinc-900 dark:text-white' },
           ].map(item => (
-            <div key={item.label} className="flex items-center justify-between bg-zinc-900/50 border border-white/5 rounded-2xl px-6 py-4 backdrop-blur-sm">
+            <div key={item.label} className="flex items-center justify-between bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-white/5 rounded-2xl px-6 py-4 backdrop-blur-sm">
               <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">{item.label}</span>
               <span className={`font-sans font-bold text-sm tabular-nums ${item.color}`}>{item.value}</span>
             </div>
@@ -102,40 +102,40 @@ export default function Login() {
       </div>
 
       {/* Painel direito — formulário */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-[#050505]">
+      <div className="flex-1 flex items-center justify-center p-8 bg-zinc-50 dark:bg-[#050505]">
         <div className="w-full max-w-sm">
 
           {/* Header mobile */}
           <div className="lg:hidden mb-12 text-center">
             <div className="inline-flex w-12 h-12 bg-primary-500 rounded-2xl items-center justify-center mb-4 shadow-lg shadow-primary-500/20">
-              <span className="font-sans font-bold text-white text-xl">F</span>
+              <span className="font-sans font-bold text-zinc-900 dark:text-white text-xl">F</span>
             </div>
-            <p className="font-sans font-bold text-white text-2xl">Financial Intel</p>
+            <p className="font-sans font-bold text-zinc-900 dark:text-white text-2xl">Financeiro Intel</p>
           </div>
 
           <div className="mb-8">
-            <h1 className="font-sans font-bold text-white text-2xl tracking-tight">
-              {mode === 'login' ? 'Welcome Back' : mode === 'register' ? 'Get Started' : 'Reset Password'}
+            <h1 className="font-sans font-bold text-zinc-900 dark:text-white text-2xl tracking-tight">
+              {mode === 'login' ? 'Bem-vindo de volta' : mode === 'register' ? 'Começar agora' : 'Redefinir Senha'}
             </h1>
             <p className="text-zinc-500 text-sm mt-2">
-              {mode === 'login' ? 'Log in to your dashboard' : mode === 'register' ? 'Create your free account' : 'Enter your new password below'}
+              {mode === 'login' ? 'Entre no seu painel' : mode === 'register' ? 'Create your free account' : 'Digite sua nova senha abaixo'}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'register' && (
               <div>
-                <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">Full Name</label>
+                <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">Nome Completo</label>
                 <input type="text" required value={form.nome} onChange={set('nome')} placeholder="John Doe" className={inputCls} />
               </div>
             )}
             <div>
-              <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">Email Address</label>
+              <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">E-mail</label>
               <input type="email" required value={form.email} onChange={set('email')} placeholder="name@company.com" className={inputCls} />
             </div>
             <div>
               <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">
-                {mode === 'forgot' ? 'New Password' : 'Password'}
+                {mode === 'forgot' ? 'New Senha' : 'Senha'}
               </label>
               <input type="password" required value={form.senha} onChange={set('senha')} placeholder="••••••••" className={inputCls} />
             </div>
@@ -148,8 +148,8 @@ export default function Login() {
               className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-primary-500/10 disabled:opacity-50 flex items-center justify-center gap-2 mt-4">
               {loading && <Loader2 size={16} className="animate-spin" />}
               {loading
-                ? (serverWaking ? 'Starting Server...' : 'Processing...')
-                : (mode === 'login' ? 'Login' : mode === 'register' ? 'Create Account' : 'Reset Password')
+                ? (serverWaking ? 'Iniciando servidor...' : 'Processando...')
+                : (mode === 'login' ? 'Entrar' : mode === 'register' ? 'Criar Conta' : 'Redefinir Senha')
               }
             </button>
           </form>
@@ -159,20 +159,20 @@ export default function Login() {
               <p className="text-center">
                 <button
                   onClick={() => { setMode('forgot'); setError('') }}
-                  className="text-zinc-500 hover:text-white text-xs transition-colors"
+                  className="text-zinc-500 hover:text-zinc-900 dark:text-white text-xs transition-colors"
                 >
-                  Forgot your password?
+                  Esqueceu sua senha?
                 </button>
               </p>
             )}
 
             <p className="text-center text-zinc-600 text-xs">
-              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              {mode === 'login' ? "Não tem uma conta? " : 'Já tem uma conta? '}
               <button
                 onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
                 className="text-primary-500 hover:text-primary-400 font-bold transition-colors"
               >
-                {mode === 'login' ? 'Sign up' : 'Login'}
+                {mode === 'login' ? 'Cadastre-se' : 'Entrar'}
               </button>
             </p>
           </div>
