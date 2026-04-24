@@ -4,7 +4,7 @@ function SkeletonLine({ w = 'w-full', h = 'h-4' }) {
 
 export function SkeletonStatCard() {
   return (
-    <div className="bg-zinc-900 rounded-2xl p-5 shadow-sm border border-zinc-800">
+    <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 shadow-sm border border-zinc-200 dark:border-zinc-800">
       <div className="flex items-center justify-between mb-4">
         <SkeletonLine w="w-24" h="h-3" />
         <div className="w-9 h-9 rounded-xl bg-zinc-700 animate-pulse" />
@@ -30,7 +30,7 @@ export function SkeletonList({ rows = 5 }) {
   return (
     <div className="space-y-3">
       {[...Array(rows)].map((_, i) => (
-        <div key={i} className="flex items-center gap-3 p-4 bg-zinc-900 rounded-xl border border-zinc-800">
+        <div key={i} className="flex items-center gap-3 p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
           <div className="w-9 h-9 rounded-xl bg-zinc-700 animate-pulse shrink-0" />
           <div className="flex-1 space-y-2">
             <SkeletonLine w="w-40" h="h-3" />

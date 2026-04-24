@@ -11,7 +11,7 @@ import { useMonthNavigation } from '../hooks/useMonthNavigation'
 
 const EMPTY_FORM = { descricao: '', valor: '', data: '', tipo: 'DESPESA', categoriaId: '' }
 
-const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
+const inputCls = 'w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-700 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800 dark:text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Lancamentos() {
   const { mes, ano, prevMes, nextMes } = useMonthNavigation()
@@ -111,17 +111,17 @@ export default function Lancamentos() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-xl font-semibold text-white">Lançamentos</h1>
+          <h1 className="font-display text-xl font-semibold text-zinc-900 dark:text-white">Lançamentos</h1>
           <p className="text-zinc-500 text-sm mt-0.5">Receitas e despesas do período</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={handleExport} disabled={exportLoading}
-            className="border border-zinc-700 hover:bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-60">
+            className="border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-60">
             {exportLoading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
             Exportar CSV
           </button>
           <button onClick={openNew}
-            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+            className="bg-primary-600 hover:bg-primary-700 text-zinc-900 dark:text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
             <Plus size={16} /> Novo lançamento
           </button>
         </div>
@@ -129,12 +129,12 @@ export default function Lancamentos() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-5">
-        <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
-          <button onClick={prevMes} className="p-1 hover:bg-zinc-800 rounded-lg">
+        <div className="flex items-center gap-1 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
+          <button onClick={prevMes} className="p-1 hover:bg-zinc-50 dark:bg-zinc-800 rounded-lg">
             <ChevronLeft size={16} className="text-zinc-500" />
           </button>
-          <span className="text-sm font-medium text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
-          <button onClick={nextMes} className="p-1 hover:bg-zinc-800 rounded-lg">
+          <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200 min-w-[120px] text-center">{mesLabel}</span>
+          <button onClick={nextMes} className="p-1 hover:bg-zinc-50 dark:bg-zinc-800 rounded-lg">
             <ChevronRight size={16} className="text-zinc-500" />
           </button>
         </div>
@@ -143,13 +143,13 @@ export default function Lancamentos() {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
           <input type="text" value={busca} onChange={e => setBusca(e.target.value)}
             placeholder="Buscar descrição ou categoria..."
-            className="w-full pl-8 pr-4 py-2 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500" />
+            className="w-full pl-8 pr-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800 dark:text-zinc-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500" />
         </div>
 
-        <div className="flex bg-zinc-900 border border-zinc-700 rounded-xl p-1 gap-1 shadow-sm">
+        <div className="flex bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl p-1 gap-1 shadow-sm">
           {['TODOS', 'RECEITA', 'DESPESA'].map(t => (
             <button key={t} onClick={() => setTipoFiltro(t)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipoFiltro === t ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-zinc-800'}`}>
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipoFiltro === t ? 'bg-primary-600 text-zinc-900 dark:text-white' : 'text-zinc-500 hover:bg-zinc-50 dark:bg-zinc-800'}`}>
               {t === 'TODOS' ? 'Todos' : t === 'RECEITA' ? 'Receitas' : 'Despesas'}
             </button>
           ))}
@@ -157,7 +157,7 @@ export default function Lancamentos() {
       </div>
 
       {/* Table */}
-      <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center h-48">
             <Loader2 size={28} className="animate-spin text-primary-500" />
@@ -168,7 +168,7 @@ export default function Lancamentos() {
             title="Nenhum lançamento encontrado"
             description="Adicione um novo lançamento para começar a registrar suas finanças."
             action={
-              <button onClick={openNew} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+              <button onClick={openNew} className="bg-primary-600 hover:bg-primary-700 text-zinc-900 dark:text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
                 <Plus size={14} /> Novo lançamento
               </button>
             }
@@ -176,7 +176,7 @@ export default function Lancamentos() {
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-zinc-800">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800">
                 <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-3">Data</th>
                 <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-3">Descrição</th>
                 <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-3">Categoria</th>
@@ -187,9 +187,9 @@ export default function Lancamentos() {
             </thead>
             <tbody className="divide-y divide-zinc-800">
               {lancamentosFiltrados.map((l) => (
-                <tr key={l.id} className="hover:bg-zinc-800/40 transition-colors">
-                  <td className="px-6 py-4 text-sm text-zinc-400">{formatDate(l.data)}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-zinc-200">{l.descricao}</td>
+                <tr key={l.id} className="hover:bg-zinc-50 dark:bg-zinc-800/40 transition-colors">
+                  <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">{formatDate(l.data)}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-zinc-800 dark:text-zinc-200">{l.descricao}</td>
                   <td className="px-6 py-4 text-sm text-zinc-500">{l.categoriaNome || l.categoria?.nome || '—'}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${l.tipo === 'RECEITA' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'}`}>
@@ -201,7 +201,7 @@ export default function Lancamentos() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(l)} className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-500 dark:hover:text-zinc-500">
+                      <button onClick={() => openEdit(l)} className="p-2 hover:bg-zinc-50 dark:bg-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-500 dark:hover:text-zinc-500">
                         <Pencil size={15} />
                       </button>
                       <button onClick={() => setConfirmId(l.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-zinc-500 hover:text-red-500">
@@ -228,28 +228,28 @@ export default function Lancamentos() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editando ? 'Editar lançamento' : 'Novo lançamento'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Descrição</label>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Descrição</label>
             <input type="text" required value={form.descricao} onChange={set('descricao')} placeholder="Ex: Salário, Aluguel..." className={inputCls} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Valor (R$)</label>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Valor (R$)</label>
               <input type="number" required min="0.01" step="0.01" value={form.valor} onChange={set('valor')} placeholder="0,00" className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Data</label>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Data</label>
               <input type="date" required value={form.data} onChange={set('data')} className={inputCls} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Tipo</label>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Tipo</label>
             <select value={form.tipo} onChange={set('tipo')} className={inputCls}>
               <option value="DESPESA">Despesa</option>
               <option value="RECEITA">Receita</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">Categoria</label>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Categoria</label>
             <select value={form.categoriaId} onChange={set('categoriaId')} className={inputCls}>
               <option value="">Sem categoria</option>
               {catsFiltradas.map(c => <option key={c.id} value={c.id}>{c.categoriaPaiNome ? `${c.categoriaPaiNome} › ` : ''}{c.nome}</option>)}
@@ -257,8 +257,8 @@ export default function Lancamentos() {
           </div>
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl">{formError}</div>}
           <div className="flex gap-3 pt-1">
-            <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300 py-2.5 rounded-xl text-sm font-medium">Cancelar</button>
-            <button type="submit" disabled={formLoading} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
+            <button type="button" onClick={() => setModalOpen(false)} className="flex-1 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 py-2.5 rounded-xl text-sm font-medium">Cancelar</button>
+            <button type="submit" disabled={formLoading} className="flex-1 bg-primary-600 hover:bg-primary-700 text-zinc-900 dark:text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2">
               {formLoading && <Loader2 size={14} className="animate-spin" />}
               {editando ? 'Salvar alterações' : 'Criar lançamento'}
             </button>

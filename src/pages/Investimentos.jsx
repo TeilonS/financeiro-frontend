@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Pencil, Trash2, Loader2, TrendingUp, AlertCircle, History, Landmark, DollarSign } from 'lucide-react'
+import { Plus, Trash2, Loader2, TrendingUp, History, Landmark } from 'lucide-react'
 import Modal from '../components/Modal'
 import * as investimentosApi from '../api/investimentos'
 import { fmt } from '../utils/formatters'
@@ -14,22 +14,17 @@ const TIPOS = [
 
 const EMPTY = { nome: '', instituicao: '', tipo: 'RENDA_FIXA' }
 const EMPTY_SNAPSHOT = { mes: new Date().getMonth() + 1, ano: new Date().getFullYear(), valor: '' }
-
-const inputCls = 'w-full px-4 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
+const inputCls = 'w-full px-4 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
 
 export default function Investimentos() {
   const [investimentos, setInvestimentos] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(EMPTY)
   const [formLoading, setFormLoading] = useState(false)
-  
   const [snapshotModalOpen, setSnapshotModalOpen] = useState(false)
   const [selectedInv, setSelectedInv] = useState(null)
   const [snapshotForm, setSnapshotForm] = useState(EMPTY_SNAPSHOT)
-  
   const [historyModalOpen, setHistoryModalOpen] = useState(false)
   const [historico, setHistorico] = useState([])
   const [historyLoading, setHistoryLoading] = useState(false)
@@ -39,7 +34,7 @@ export default function Investimentos() {
     try {
       const res = await investimentosApi.listar()
       setInvestimentos(res.data || [])
-    } catch { setError('Erro ao carregar investimentos.') }
+    } catch { alert('Erro ao carregar investimentos.') }
     finally { setLoading(false) }
   }
 
@@ -50,7 +45,7 @@ export default function Investimentos() {
     try {
       await investimentosApi.criar(form)
       setModalOpen(false); load()
-    } catch (err) { setError('Erro ao criar investimento.') }
+    } catch { alert('Erro ao criar investimento.') }
     finally { setFormLoading(false) }
   }
 
@@ -62,7 +57,7 @@ export default function Investimentos() {
         valor: parseFloat(snapshotForm.valor)
       })
       setSnapshotModalOpen(false); load()
-    } catch (err) { setError('Erro ao registrar saldo.') }
+    } catch { alert('Erro ao registrar saldo.') }
     finally { setFormLoading(false) }
   }
 
@@ -71,23 +66,23 @@ export default function Investimentos() {
     try {
       const res = await investimentosApi.listarHistorico(inv.id)
       setHistorico(res.data || [])
-    } catch { setError('Erro ao carregar histórico.') }
+    } catch { alert('Erro ao carregar histórico.') }
     finally { setHistoryLoading(false) }
   }
 
   async function handleDelete(id) {
     if (!confirm('Deseja realmente excluir este investimento?')) return
     try { await investimentosApi.deletar(id); load() }
-    catch { setError('Erro ao excluir investimento.') }
+    catch { alert('Erro ao excluir investimento.') }
   }
 
   const totalInvestido = investimentos.reduce((s, i) => s + (i.saldoAtual || 0), 0)
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[#050505]">
+    <div className="p-8 max-w-7xl mx-auto min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
-          <h1 className="font-sans text-3xl font-bold text-white tracking-tight">Investimentos</h1>
+          <h1 className="font-sans text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Investimentos</h1>
           <p className="text-zinc-500 text-sm mt-2">Gestão de patrimônio e evolução mensal</p>
         </div>
         <button 
@@ -111,30 +106,30 @@ export default function Investimentos() {
       {loading ? (
         <div className="flex items-center justify-center h-64"><Loader2 size={32} className="animate-spin text-primary-500" /></div>
       ) : investimentos.length === 0 ? (
-        <div className="bg-[#0A0A0A] rounded-3xl border border-white/5 text-center py-20 text-zinc-500">
-          <Landmark size={48} className="mx-auto mb-4 opacity-20" />
-          <p className="font-bold text-white mb-1">Nenhum investimento registrado</p>
-          <p className="text-sm">Comece adicionando seus ativos de renda fixa, ações ou cripto.</p>
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-white/5 text-center py-20">
+          <Landmark size={48} className="mx-auto mb-4 text-zinc-300 dark:text-zinc-700" />
+          <p className="font-bold text-zinc-900 dark:text-white mb-1">Nenhum investimento registrado</p>
+          <p className="text-sm text-zinc-500">Comece adicionando seus ativos de renda fixa, ações ou cripto.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {investimentos.map(i => (
-            <div key={i.id} className="bg-[#0A0A0A] rounded-3xl border border-white/5 p-6 hover:border-white/10 transition-colors group">
+            <div key={i.id} className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-white/5 p-6 hover:shadow-xl transition-all group shadow-sm shadow-zinc-200/50 dark:shadow-none">
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-zinc-900 rounded-2xl flex items-center justify-center text-primary-400 border border-white/5">
+                  <div className="w-12 h-12 bg-zinc-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-primary-500 border border-zinc-100 dark:border-white/5">
                     <Landmark size={24} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white">{i.nome}</h3>
-                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{i.instituicao}</p>
+                    <h3 className="font-bold text-zinc-900 dark:text-white">{i.nome}</h3>
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{i.instituicao}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => openHistory(i)} className="p-2 hover:bg-white/5 rounded-xl text-zinc-500 hover:text-white transition-colors">
+                  <button onClick={() => openHistory(i)} className="p-2 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                     <History size={16} />
                   </button>
-                  <button onClick={() => handleDelete(i.id)} className="p-2 hover:bg-red-500/10 rounded-xl text-zinc-500 hover:text-red-500 transition-colors">
+                  <button onClick={() => handleDelete(id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl text-zinc-400 hover:text-red-500 transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -142,20 +137,19 @@ export default function Investimentos() {
 
               <div className="space-y-4">
                 <div>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Saldo Atual</p>
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Saldo Atual</p>
                   <div className="flex items-end justify-between">
-                    <p className="text-2xl font-bold text-white tabular-nums">{fmt(i.saldoAtual)}</p>
+                    <p className="text-2xl font-bold text-zinc-900 dark:text-white tabular-nums">{fmt(i.saldoAtual)}</p>
                     <button 
                       onClick={() => { setSelectedInv(i); setSnapshotForm(EMPTY_SNAPSHOT); setSnapshotModalOpen(true) }}
-                      className="text-[10px] font-bold text-primary-400 uppercase tracking-widest hover:text-primary-300 transition-colors"
+                      className="text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:underline"
                     >
                       Atualizar Saldo
                     </button>
                   </div>
                 </div>
-                
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                  <span className="px-3 py-1 bg-zinc-900 rounded-full text-[10px] font-bold text-zinc-400 uppercase tracking-widest border border-white/5">
+                <div className="pt-4 border-t border-zinc-100 dark:border-white/5">
+                  <span className="px-3 py-1 bg-zinc-50 dark:bg-zinc-800 rounded-full text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest border border-zinc-100 dark:border-white/5">
                     {TIPOS.find(t => t.value === i.tipo)?.label}
                   </span>
                 </div>
@@ -165,7 +159,7 @@ export default function Investimentos() {
         </div>
       )}
 
-      {/* Modal Novo Investimento */}
+      {/* Modais */}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Novo Investimento">
         <form onSubmit={handleSubmit} className="space-y-6 p-2">
           <div>
@@ -182,14 +176,12 @@ export default function Investimentos() {
               {TIPOS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
-          <button type="submit" disabled={formLoading} className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-2xl font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-            {formLoading && <Loader2 size={16} className="animate-spin" />}
-            Salvar Investimento
+          <button type="submit" disabled={formLoading} className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-2xl font-bold text-sm transition-all disabled:opacity-50">
+            {formLoading ? 'Salvando...' : 'Salvar Investimento'}
           </button>
         </form>
       </Modal>
 
-      {/* Modal Atualizar Saldo (Snapshot) */}
       <Modal open={snapshotModalOpen} onClose={() => setSnapshotModalOpen(false)} title={`Atualizar Saldo: ${selectedInv?.nome}`}>
         <form onSubmit={handleSnapshotSubmit} className="space-y-6 p-2">
           <div className="grid grid-cols-2 gap-4">
@@ -206,14 +198,12 @@ export default function Investimentos() {
             <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest">Saldo no Período (R$)</label>
             <input type="number" required step="0.01" value={snapshotForm.valor} onChange={e => setSnapshotForm({...snapshotForm, valor: e.target.value})} placeholder="0.00" className={inputCls} />
           </div>
-          <button type="submit" disabled={formLoading} className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-2xl font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-            {formLoading && <Loader2 size={16} className="animate-spin" />}
-            Confirmar Saldo
+          <button type="submit" disabled={formLoading} className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-2xl font-bold text-sm transition-all">
+             Confirmar Saldo
           </button>
         </form>
       </Modal>
 
-      {/* Modal Histórico */}
       <Modal open={historyModalOpen} onClose={() => setHistoryModalOpen(false)} title="Histórico de Evolução">
         <div className="p-2 space-y-4 max-h-[400px] overflow-y-auto">
           {historyLoading ? (
@@ -222,10 +212,10 @@ export default function Investimentos() {
             <p className="text-center py-10 text-zinc-500 text-sm italic">Nenhum histórico registrado.</p>
           ) : (
             historico.map(s => (
-              <div key={s.id} className="flex items-center justify-between p-4 bg-zinc-900 rounded-2xl border border-white/5">
+              <div key={s.id} className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800 rounded-2xl border border-zinc-100 dark:border-white/5">
                 <div>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{s.mes < 10 ? '0'+s.mes : s.mes}/{s.ano}</p>
-                  <p className="text-sm font-bold text-white">{fmt(s.valor)}</p>
+                  <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{s.mes < 10 ? '0'+s.mes : s.mes}/{s.ano}</p>
+                  <p className="text-sm font-bold text-zinc-900 dark:text-white">{fmt(s.valor)}</p>
                 </div>
                 <TrendingUp size={16} className="text-emerald-500 opacity-50" />
               </div>

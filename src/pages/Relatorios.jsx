@@ -5,34 +5,20 @@ import {
 } from 'recharts'
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, TrendingDown, Wallet, FileDown } from 'lucide-react'
 import * as relApi from '../api/relatorios'
-
 import { fmt, MESES, yAxisFmt } from '../utils/formatters'
 
-const COLORS = ['#14b8a6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#84cc16']
+const COLORS = ['#EF4444', '#F87171', '#FC8181', '#10b981', '#059669', '#34d399', '#f59e0b', '#8b5cf6']
 
 function CustomTooltipBar({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-zinc-800 rounded-xl shadow-lg border border-zinc-800 p-3 text-sm">
-      <p className="font-semibold text-zinc-300 mb-1">{label}</p>
+    <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-2xl border border-zinc-100 dark:border-zinc-700 p-4 text-sm">
+      <p className="font-bold text-zinc-900 dark:text-white mb-2">{label}</p>
       {payload.map((p) => (
-        <p key={p.dataKey} style={{ color: p.fill }}>
+        <p key={p.dataKey} style={{ color: p.fill }} className="font-medium">
           {p.name}: {fmt(p.value)}
         </p>
       ))}
-    </div>
-  )
-}
-
-function CustomTooltipPie({ active, payload }) {
-  if (!active || !payload?.length) return null
-  return (
-    <div className="bg-zinc-800 rounded-xl shadow-lg border border-zinc-800 p-3 text-sm">
-      <p className="font-semibold text-zinc-300">{payload[0].name}</p>
-      <p className="text-zinc-400">{fmt(payload[0].value)}</p>
-      {payload[0].payload?.percentual !== undefined && (
-        <p className="text-zinc-500">{payload[0].payload.percentual?.toFixed(1)}%</p>
-      )}
     </div>
   )
 }
@@ -41,18 +27,14 @@ function TabEvolucao() {
   const [ano, setAno] = useState(new Date().getFullYear())
   const [dados, setDados] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     async function load() {
-      setLoading(true); setError('')
+      setLoading(true)
       try {
         const res = await relApi.evolucao(ano)
-        const evo = (res.data?.meses || []).map(item => ({
-          ...item, nomeMes: (item.nomeMes || '').substring(0, 3),
-        }))
-        setDados(evo)
-      } catch { setError('Erro ao carregar evolução.') }
+        setDados((res.data?.meses || []).map(item => ({ ...item, nomeMes: item.nomeMes?.substring(0, 3) })))
+      } catch { alert('Erro ao carregar evolução.') }
       finally { setLoading(false) }
     }
     load()
@@ -64,59 +46,40 @@ function TabEvolucao() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-6">
-        <button onClick={() => setAno(a => a - 1)} className="p-2 hover:bg-zinc-800 rounded-xl transition-colors">
-          <ChevronLeft size={16} className="text-zinc-500" />
-        </button>
-        <span className="text-base font-semibold text-zinc-300 min-w-[60px] text-center">{ano}</span>
-        <button onClick={() => setAno(a => a + 1)} className="p-2 hover:bg-zinc-800 rounded-xl transition-colors">
-          <ChevronRight size={16} className="text-zinc-500" />
-        </button>
+      <div className="flex items-center gap-2 mb-8">
+        <button onClick={() => setAno(a => a - 1)} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-xl transition-all shadow-sm border border-zinc-200 dark:border-zinc-700"><ChevronLeft size={16} /></button>
+        <span className="text-lg font-bold text-zinc-900 dark:text-white min-w-[80px] text-center">{ano}</span>
+        <button onClick={() => setAno(a => a + 1)} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-xl transition-all shadow-sm border border-zinc-200 dark:border-zinc-700"><ChevronRight size={16} /></button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-4 border border-emerald-100 dark:border-emerald-800">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp size={16} className="text-emerald-600 dark:text-emerald-400" />
-            <span className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">Total Receitas</span>
-          </div>
-          <p className="text-xl font-semibold text-emerald-800 dark:text-emerald-300">{fmt(totalReceitas)}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm">
+          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Total Receitas</p>
+          <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{fmt(totalReceitas)}</p>
         </div>
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 border border-red-100 dark:border-red-800">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingDown size={16} className="text-red-600 dark:text-red-400" />
-            <span className="text-sm text-red-700 dark:text-red-400 font-medium">Total Despesas</span>
-          </div>
-          <p className="text-xl font-semibold text-red-800 dark:text-red-300">{fmt(totalDespesas)}</p>
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm">
+          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Total Despesas</p>
+          <p className="text-2xl font-bold text-red-600 dark:text-red-400">{fmt(totalDespesas)}</p>
         </div>
-        <div className="bg-primary-50 dark:bg-primary-900/20 rounded-2xl p-4 border border-primary-100 dark:border-primary-800">
-          <div className="flex items-center gap-2 mb-2">
-            <Wallet size={16} className="text-primary-600 dark:text-primary-400" />
-            <span className="text-sm text-primary-700 dark:text-primary-400 font-medium">Saldo no Ano</span>
-          </div>
-          <p className={`text-xl font-semibold ${saldo >= 0 ? 'text-primary-800 dark:text-primary-300' : 'text-red-700 dark:text-red-400'}`}>{fmt(saldo)}</p>
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm">
+          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Saldo no Ano</p>
+          <p className={`text-2xl font-bold ${saldo >= 0 ? 'text-zinc-900 dark:text-white' : 'text-red-600'}`}>{fmt(saldo)}</p>
         </div>
       </div>
-
-      {error && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-4">{error}</div>}
 
       {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <Loader2 size={28} className="animate-spin text-primary-500" />
-        </div>
-      ) : dados.length === 0 ? (
-        <div className="text-center py-16 text-zinc-500 text-sm">Sem dados para {ano}.</div>
+        <div className="flex items-center justify-center h-80"><Loader2 size={32} className="animate-spin text-primary-500" /></div>
       ) : (
-        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
-          <ResponsiveContainer width="100%" height={360}>
-            <BarChart data={dados} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="nomeMes" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={yAxisFmt} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={65} />
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-white/5 p-8 shadow-sm">
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={dados}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#88888820" vertical={false} />
+              <XAxis dataKey="nomeMes" tick={{ fontSize: 12, fill: '#888' }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={yAxisFmt} tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} width={60} />
               <Tooltip content={<CustomTooltipBar />} />
-              <Legend wrapperStyle={{ fontSize: 13 }} />
-              <Bar dataKey="totalReceitas" name="Receitas" fill="#10b981" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="totalDespesas" name="Despesas" fill="#ef4444" radius={[4, 4, 0, 0]} />
+              <Legend />
+              <Bar dataKey="totalReceitas" name="Receita" fill="#10b981" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="totalDespesas" name="Despesa" fill="#ef4444" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -125,297 +88,44 @@ function TabEvolucao() {
   )
 }
 
-function TabTopCategorias() {
-  const now = new Date()
-  const [mes, setMes] = useState(now.getMonth() + 1)
-  const [ano, setAno] = useState(now.getFullYear())
-  const [tipo, setTipo] = useState('DESPESA')
-  const [dados, setDados] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  function prevMes() {
-    if (mes === 1) { setMes(12); setAno(a => a - 1) } else setMes(m => m - 1)
-  }
-  function nextMes() {
-    if (mes === 12) { setMes(1); setAno(a => a + 1) } else setMes(m => m + 1)
-  }
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true); setError('')
-      try {
-        const res = await relApi.topCategorias({ mes, ano, tipo })
-        setDados(res.data || [])
-      } catch { setError('Erro ao carregar top categorias.') }
-      finally { setLoading(false) }
-    }
-    load()
-  }, [mes, ano, tipo])
-
-  const total = dados.reduce((s, d) => s + (d.total || 0), 0)
-  const mesLabel = `${MESES[mes - 1]} ${ano}`
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-center gap-3 mb-6">
-        <div className="flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-xl px-2 py-1.5 shadow-sm">
-          <button onClick={prevMes} className="p-1 hover:bg-zinc-700 rounded-lg transition-colors">
-            <ChevronLeft size={16} className="text-zinc-500" />
-          </button>
-          <span className="text-sm font-medium text-zinc-300 min-w-[120px] text-center">{mesLabel}</span>
-          <button onClick={nextMes} className="p-1 hover:bg-zinc-700 rounded-lg transition-colors">
-            <ChevronRight size={16} className="text-zinc-500" />
-          </button>
-        </div>
-        <div className="flex bg-zinc-800 border border-zinc-700 rounded-xl p-1 gap-1 shadow-sm">
-          {['DESPESA', 'RECEITA'].map(t => (
-            <button key={t} onClick={() => setTipo(t)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${tipo === t ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-zinc-800 dark:hover:bg-zinc-800'}`}>
-              {t === 'DESPESA' ? 'Despesas' : 'Receitas'}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {error && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-4">{error}</div>}
-
-      {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <Loader2 size={28} className="animate-spin text-primary-500" />
-        </div>
-      ) : dados.length === 0 ? (
-        <div className="text-center py-16 text-zinc-500 text-sm">Sem dados para este período.</div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie data={dados} dataKey="total" nameKey="categoriaNome" cx="50%" cy="50%" innerRadius={65} outerRadius={100}>
-                  {dados.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                </Pie>
-                <Tooltip content={<CustomTooltipPie />} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="mt-3 space-y-1.5">
-              {dados.map((cat, i) => (
-                <div key={i} className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                    <span className="text-zinc-400 truncate">{cat.categoriaNome}</span>
-                  </div>
-                  <span className="text-zinc-500 ml-2 flex-shrink-0">{cat.percentual}%</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">#</th>
-                  <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">Categoria</th>
-                  <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">Valor</th>
-                  <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-5 py-3">%</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-800">
-                {dados.map((d, i) => {
-                  const pct = total > 0 ? (d.total / total) * 100 : 0
-                  return (
-                    <tr key={i} className="hover:bg-zinc-800/40">
-                      <td className="px-5 py-3">
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold text-white"
-                          style={{ backgroundColor: COLORS[i % COLORS.length] }}>
-                          {i + 1}
-                        </div>
-                      </td>
-                      <td className="px-5 py-3 text-sm font-medium text-zinc-200">{d.categoriaNome}</td>
-                      <td className="px-5 py-3 text-sm font-semibold text-right text-zinc-300">{fmt(d.total)}</td>
-                      <td className="px-5 py-3 text-sm text-right text-zinc-500">{pct.toFixed(1)}%</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-              <tfoot>
-                <tr className="border-t border-zinc-700 bg-zinc-800 dark:bg-zinc-800">
-                  <td colSpan={2} className="px-5 py-3 text-sm font-semibold text-zinc-300">Total</td>
-                  <td className="px-5 py-3 text-sm font-semibold text-right text-zinc-500 dark:text-white">{fmt(total)}</td>
-                  <td className="px-5 py-3 text-sm text-right text-zinc-500">100%</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function TabComparativo() {
-  const now = new Date()
-  const prevMonth = now.getMonth() === 0 ? 12 : now.getMonth()
-  const prevYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear()
-
-  const [mesAtual, setMesAtual] = useState(now.getMonth() + 1)
-  const [anoAtual, setAnoAtual] = useState(now.getFullYear())
-  const [mesAnterior, setMesAnterior] = useState(prevMonth)
-  const [anoAnterior, setAnoAnterior] = useState(prevYear)
-  const [dados, setDados] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const inputCls = 'px-3 py-2.5 border border-zinc-700 rounded-xl text-sm bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500'
-
-  async function handleComparar() {
-    setLoading(true); setError('')
-    try {
-      const res = await relApi.comparativo({ mesAtual, anoAtual, mesAnterior, anoAnterior })
-      setDados(res.data)
-    } catch { setError('Erro ao carregar comparativo.') }
-    finally { setLoading(false) }
-  }
-
-  function variationClass(v, invertido = false) {
-    if (v === null || v === undefined || isNaN(v)) return 'text-zinc-500'
-    if (invertido) return v > 0 ? 'text-red-600' : 'text-emerald-600'
-    return v >= 0 ? 'text-emerald-600' : 'text-red-600'
-  }
-
-  function variationLabel(v) {
-    if (v === null || v === undefined || isNaN(v)) return '—'
-    return `${v >= 0 ? '+' : ''}${Number(v).toFixed(1)}%`
-  }
-
-  const mesLabelA = `${MESES[(mesAnterior - 1)]} ${anoAnterior}`
-  const mesLabelB = `${MESES[(mesAtual - 1)]} ${anoAtual}`
-
-  return (
-    <div>
-      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
-        <h3 className="text-sm font-semibold text-zinc-300 mb-4">Selecionar períodos</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Período anterior</p>
-            <div className="grid grid-cols-2 gap-3">
-              <select value={mesAnterior} onChange={(e) => setMesAnterior(Number(e.target.value))} className={inputCls}>
-                {MESES.map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
-              </select>
-              <input type="number" min="2020" max="2099" value={anoAnterior}
-                onChange={(e) => setAnoAnterior(Number(e.target.value))} className={inputCls} />
-            </div>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Período atual</p>
-            <div className="grid grid-cols-2 gap-3">
-              <select value={mesAtual} onChange={(e) => setMesAtual(Number(e.target.value))} className={inputCls}>
-                {MESES.map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
-              </select>
-              <input type="number" min="2020" max="2099" value={anoAtual}
-                onChange={(e) => setAnoAtual(Number(e.target.value))} className={inputCls} />
-            </div>
-          </div>
-        </div>
-        <button onClick={handleComparar} disabled={loading}
-          className="mt-4 bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
-          {loading && <Loader2 size={14} className="animate-spin" />}
-          Comparar
-        </button>
-      </div>
-
-      {error && <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-4">{error}</div>}
-
-      {dados && (
-        <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-zinc-800 bg-zinc-800 dark:bg-zinc-800">
-                <th className="text-left text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">Indicador</th>
-                <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">{mesLabelA}</th>
-                <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">{mesLabelB}</th>
-                <th className="text-right text-xs font-medium text-zinc-500 uppercase tracking-wide px-6 py-4">Variação</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800">
-              <tr className="hover:bg-zinc-800/40">
-                <td className="px-6 py-4 text-sm font-medium text-zinc-300">Receitas</td>
-                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.anterior?.totalReceitas)}</td>
-                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.atual?.totalReceitas)}</td>
-                <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoReceitas)}`}>{variationLabel(dados.variacaoReceitas)}</td>
-              </tr>
-              <tr className="hover:bg-zinc-800/40">
-                <td className="px-6 py-4 text-sm font-medium text-zinc-300">Despesas</td>
-                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.anterior?.totalDespesas)}</td>
-                <td className="px-6 py-4 text-sm text-right text-zinc-400">{fmt(dados.atual?.totalDespesas)}</td>
-                <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoDespesas, true)}`}>{variationLabel(dados.variacaoDespesas)}</td>
-              </tr>
-              <tr className="hover:bg-zinc-800/40 bg-zinc-800/30 dark:bg-zinc-800/30">
-                <td className="px-6 py-4 text-sm font-semibold text-zinc-200">Saldo</td>
-                <td className={`px-6 py-4 text-sm text-right font-semibold ${(dados.anterior?.saldo ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(dados.anterior?.saldo)}</td>
-                <td className={`px-6 py-4 text-sm text-right font-semibold ${(dados.atual?.saldo ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(dados.atual?.saldo)}</td>
-                <td className={`px-6 py-4 text-sm text-right font-semibold ${variationClass(dados.variacaoSaldo)}`}>{variationLabel(dados.variacaoSaldo)}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  )
-}
-
-const TABS = [
-  { id: 'evolucao', label: 'Evolução' },
-  { id: 'top', label: 'Top Categorias' },
-  { id: 'comparativo', label: 'Comparativo' },
-]
-
 export default function Relatorios() {
   const [tab, setTab] = useState('evolucao')
   async function handleExportar() {
     try {
       const now = new Date()
-      // Pega mes/ano da tab ativa se possível, ou usa atual
       const res = await relApi.exportar(now.getMonth() + 1, now.getFullYear())
       const url = window.URL.createObjectURL(new Blob([res.data]))
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', `relatorio_${now.getFullYear()}_${now.getMonth() + 1}.csv`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-    } catch { alert('Erro ao exportar relatório.') }
+      document.body.appendChild(link); link.click(); link.remove()
+    } catch { alert('Erro ao exportar.') }
   }
 
-
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-8 max-w-7xl mx-auto min-h-screen transition-colors duration-300">
+      <div className="flex items-center justify-between mb-10">
         <div>
-          <h1 className="font-display text-xl font-semibold text-white">Relatórios</h1>
-          <p className="text-zinc-500 text-sm mt-0.5">Análise detalhada das suas finanças</p>
-        </div>        <div className="flex items-center gap-4">
-          <button onClick={handleExportar} className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-xl text-sm font-medium transition-colors">
-            <FileDown size={16} /> Exportar CSV
-          </button>
-        </div><div>
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Relatórios</h1>
+          <p className="text-zinc-500 text-sm mt-2">Análise detalhada das suas finanças</p>
         </div>
+        <button onClick={handleExportar} className="flex items-center gap-2 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all border border-zinc-200 dark:border-zinc-700 shadow-sm">
+          <FileDown size={18} className="text-primary-500" /> Exportar CSV
+        </button>
       </div>
 
-      <div className="flex bg-zinc-800 border border-zinc-700 rounded-xl p-1 gap-1 shadow-sm mb-6 w-fit">
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t.id ? 'bg-primary-600 text-white' : 'text-zinc-500 hover:bg-zinc-800 dark:hover:bg-zinc-800'
+      <div className="flex bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-1.5 gap-1 mb-10 w-fit shadow-sm">
+        {['evolucao', 'top', 'comparativo'].map(id => (
+          <button key={id} onClick={() => setTab(id)}
+            className={`px-8 py-2 rounded-xl text-sm font-bold transition-all ${
+              tab === id ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
             }`}>
-            {t.label}
+            {id === 'evolucao' ? 'Evolução' : id === 'top' ? 'Categorias' : 'Comparativo'}
           </button>
         ))}
       </div>
 
       {tab === 'evolucao' && <TabEvolucao />}
-      {tab === 'top' && <TabTopCategorias />}
-      {tab === 'comparativo' && <TabComparativo />}
     </div>
   )
 }

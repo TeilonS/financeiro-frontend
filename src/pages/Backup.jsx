@@ -1,129 +1,101 @@
-import { useState, useRef } from 'react'
-import { HardDrive, Download, Upload, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { FileUp, FileDown, Loader2, AlertTriangle, ShieldCheck } from 'lucide-react'
 import * as backupApi from '../api/backup'
+import toast from 'react-hot-toast'
 
 export default function Backup() {
-  const [exportLoading, setExportLoading] = useState(false)
-  const [importLoading, setImportLoading] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [error, setError] = useState('')
-  const fileInputRef = useRef()
+  const [loading, setLoading] = useState(false)
 
-  async function handleExportar() {
-    setExportLoading(true); setError(''); setSuccess('')
+  async function handleExport() {
+    setLoading(true)
     try {
       const res = await backupApi.exportar()
       const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `backup-financeiro-${new Date().toISOString().slice(0, 10)}.json`
-      a.click()
-      URL.revokeObjectURL(url)
-      setSuccess('Backup exportado com sucesso.')
-    } catch { setError('Erro ao exportar backup.') }
-    finally { setExportLoading(false) }
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `backup-financeiro-${new Date().toISOString().split('T')[0]}.json`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      toast.success('Backup exportado com sucesso!')
+    } catch { toast.error('Erro ao exportar backup.') }
+    finally { setLoading(false) }
   }
 
-  async function handleImportar(e) {
+  async function handleImport(e) {
     const file = e.target.files?.[0]
-    e.target.value = ''
     if (!file) return
-    setImportLoading(true); setError(''); setSuccess('')
-    try {
-      const text = await file.text()
-      const data = JSON.parse(text)
-      const res = await backupApi.importar(data)
-      const counts = res.data || {}
-      const total = Object.values(counts).reduce((s, v) => s + (typeof v === 'number' ? v : 0), 0)
-      setSuccess(`Backup importado com sucesso. ${total} registros restaurados.`)
-    } catch (err) {
-      setError(err.response?.data?.mensagem || 'Erro ao importar backup. Verifique se o arquivo é válido.')
-    } finally {
-      setImportLoading(false)
+    if (!confirm('Atenção: Os dados do arquivo serão adicionados ao seu cadastro. Deseja continuar?')) return
+    
+    setLoading(true)
+    const reader = new FileReader()
+    reader.onload = async (event) => {
+      try {
+        const dados = JSON.parse(event.target.result)
+        await backupApi.importar(dados)
+        toast.success('Dados importados com sucesso!')
+      } catch { toast.error('Erro ao importar. Verifique o formato do arquivo.') }
+      finally { setLoading(false); e.target.value = '' }
     }
+    reader.readAsText(file)
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h1 className="font-display text-xl font-semibold text-white">Backup</h1>
-        <p className="text-zinc-500 text-sm mt-0.5">Exporte ou restaure todos os seus dados</p>
+    <div className="p-8 max-w-4xl mx-auto min-h-screen transition-colors duration-300">
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Backup</h1>
+        <p className="text-zinc-500 text-sm mt-2">Exporte ou restaure todos os seus dados com segurança</p>
       </div>
 
-      {success && (
-        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-sm px-4 py-3 rounded-xl mb-5 flex items-center gap-2">
-          <CheckCircle size={16} />{success}
-          <button onClick={() => setSuccess('')} className="ml-auto text-emerald-500 hover:text-emerald-700">×</button>
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl mb-5 flex items-center gap-2">
-          <AlertCircle size={16} />{error}
-          <button onClick={() => setError('')} className="ml-auto text-red-400 hover:text-red-600">×</button>
-        </div>
-      )}
-
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-6">
         {/* Exportar */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-11 h-11 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center shrink-0">
-              <Download size={20} className="text-primary-600 dark:text-primary-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-zinc-200 mb-1">Exportar dados</h2>
-              <p className="text-xs text-zinc-500 mb-4">
-                Baixa um arquivo JSON com todos os seus dados: categorias, lançamentos, metas, orçamentos, cartões e recorrências.
-              </p>
-              <button onClick={handleExportar} disabled={exportLoading}
-                className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
-                {exportLoading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-                Exportar backup
-              </button>
-            </div>
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-white/5 p-8 flex items-start gap-6 shadow-sm shadow-zinc-200/50 dark:shadow-none">
+          <div className="w-14 h-14 bg-primary-500/10 rounded-2xl flex items-center justify-center shrink-0">
+            <FileDown className="text-primary-500" size={28} />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Exportar dados</h2>
+            <p className="text-sm text-zinc-500 mt-1 mb-6">Baixa um arquivo JSON com todos os seus dados: categorias, lançamentos, metas, orçamentos, cartões e recorrências.</p>
+            <button onClick={handleExport} disabled={loading} className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2">
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              Exportar backup
+            </button>
           </div>
         </div>
 
         {/* Importar */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 shadow-sm p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-11 h-11 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center shrink-0">
-              <Upload size={20} className="text-amber-600 dark:text-amber-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-zinc-200 mb-1">Importar dados</h2>
-              <p className="text-xs text-zinc-500 mb-1">
-                Restaura dados a partir de um arquivo de backup JSON exportado anteriormente.
-              </p>
-              <p className="text-xs text-amber-600 dark:text-amber-400 font-medium mb-4">
-                ⚠ Atenção: a importação adiciona os dados ao seu cadastro atual sem apagar o existente.
-              </p>
-              <button onClick={() => fileInputRef.current?.click()} disabled={importLoading}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 flex items-center gap-2">
-                {importLoading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-                Selecionar arquivo
-              </button>
-              <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleImportar} />
-            </div>
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-white/5 p-8 flex items-start gap-6 shadow-sm shadow-zinc-200/50 dark:shadow-none">
+          <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center shrink-0">
+            <FileUp className="text-amber-500" size={28} />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Importar dados</h2>
+            <p className="text-sm text-zinc-500 mt-1 mb-2">Restaura dados a partir de um arquivo de backup JSON exportado anteriormente.</p>
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1 mb-6">
+              <AlertTriangle size={12} /> Atenção: a importação adiciona os dados ao seu cadastro atual sem apagar o existente.
+            </p>
+            <label className="inline-flex bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer">
+              Selecionar arquivo
+              <input type="file" className="hidden" accept=".json" onChange={handleImport} disabled={loading} />
+            </label>
           </div>
         </div>
 
-        {/* Info */}
-        <div className="bg-zinc-800 dark:bg-zinc-800 rounded-2xl border border-zinc-800 p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <HardDrive size={16} className="text-zinc-500" />
-            <span className="text-sm font-medium text-zinc-300">O que é incluído no backup</span>
-          </div>
-          <ul className="space-y-1.5 text-xs text-zinc-500">
-            {['Categorias e subcategorias', 'Todos os lançamentos', 'Metas de gastos', 'Orçamentos mensais', 'Cartões de crédito', 'Recorrências'].map(item => (
-              <li key={item} className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0" />
-                {item}
-              </li>
-            ))}
-          </ul>
+        {/* Segurança */}
+        <div className="bg-zinc-100 dark:bg-zinc-800/30 rounded-3xl p-8 border border-zinc-200 dark:border-white/5">
+           <div className="flex items-center gap-2 mb-4 text-zinc-900 dark:text-white">
+              <ShieldCheck size={20} className="text-primary-500" />
+              <h3 className="font-bold">O que é incluído no backup</h3>
+           </div>
+           <ul className="grid grid-cols-2 gap-y-2 gap-x-8">
+              {['Categorias', 'Lançamentos', 'Metas', 'Orçamentos', 'Cartões', 'Recorrências'].map(item => (
+                <li key={item} className="flex items-center gap-2 text-sm text-zinc-500">
+                  <div className="w-1 h-1 rounded-full bg-primary-500" />
+                  {item}
+                </li>
+              ))}
+           </ul>
         </div>
       </div>
     </div>
